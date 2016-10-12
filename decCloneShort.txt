@@ -1,0 +1,109 @@
+<!--The list of states.-->
+		<block id="0" name="q0">
+        			<tag>Machine0</tag>
+
+
+        		</block>
+        		<block id="1" name="q1">
+        			<tag>Machine1</tag>
+
+
+        		</block>
+        <!--The list of transitions.-->
+        		<transition>
+        			<from>17</from>
+        			<to>19</to>
+        			<read>1</read>
+        			<write>1</write>
+        			<move>R</move>
+        		</transition>
+        		<transition>
+        			<from>19</from>
+        			<to>29</to>
+        			<read>a</read>
+        			<write>a</write>
+        			<move>L</move>
+        		</transition>
+<!--The list of automata-->
+<cloneLR.jff>
+			<!--The list of states.-->
+			<block id="0" name="q0">
+				<tag>Machine0</tag>
+
+
+				<initial/>
+			</block>
+			<block id="1" name="q1">
+				<tag>Machine1</tag>
+
+
+			</block>
+			<!--The list of transitions.-->
+            			<transition>
+            				<from>6</from>
+            				<to>1</to>
+            				<read>e</read>
+            				<write>e</write>
+            				<move>R</move>
+            			</transition>
+            			<transition>
+            				<from>6</from>
+            				<to>1</to>
+            				<read>z</read>
+            				<write>z</write>
+            				<move>R</move>
+            			</transition>
+            			<!--The list of automata-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        		</cloneLR.jff>
+            <dec.jff>
+            			<!--The list of states.-->
+            			<block id="0" name="q0">
+            				<tag>Machine0</tag>
+
+
+            			</block>
+            			<block id="1" name="q1">
+            				<tag>Machine1</tag>
+                        </block>
+            				<!--The list of transitions.-->
+                            			<transition>
+                            				<from>1</from>
+                            				<to>2</to>
+                            				<read>1</read>
+                            				<write>0</write>
+                            				<move>L</move>
+                            			</transition>
+                            			<transition>
+                            				<from>6</from>
+                            				<to>4</to>
+                            				<read>a</read>
+                            				<write>a</write>
+                            				<move>R</move>
+                            			</transition>
+                            			<!--The list of automata-->
+
+
+
+
+
+
+
+
+
+
+                                        		</dec.jff>
+                                        		</automaton>
