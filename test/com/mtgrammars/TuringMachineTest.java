@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static com.mtgrammars.TuringMachine.readMT;
 import static com.mtgrammars.BlockTuringMachine.readBlock;
+import static com.mtgrammars.TuringMachine.readMTWholeFile;
 
 /**
  * Created by Alex on 02.10.2016.
@@ -68,6 +69,13 @@ public class TuringMachineTest {
     }
 
     @Test
+    public void readFullMTWholeFile() throws Exception {
+        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        TuringMachine turingMachine = readMTWholeFile(br);
+        System.out.println(turingMachine);
+    }
+
+    @Test
     public void convertMTtoGrammar() throws Exception {
         BufferedReader br = getBufferedReader("dec.txt");
         TuringMachine dec = readMT(br, "dec.jff");
@@ -75,35 +83,44 @@ public class TuringMachineTest {
         System.out.println(decGrammar);
     }
 
+//    @Test
+//    public void emulateGrammarDec() throws Exception {
+//        BufferedReader br = getBufferedReader("dec.txt");
+//        TuringMachine dec = readMT(br, "dec.jff");
+//        Grammar decGrammar = TuringMachineConvertor.TuringMachineToGrammar0(dec);
+//        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+//        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(dec.initialState.name), new CompositeSymbol("a", "a"),
+//                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"), new CompositeSymbol("a", "a"))
+//                .collect(Collectors.toList());
+//        Grammar.Pair<List<Integer>,String> res = decGrammar.emulateGrammar0Partially(input, 10);
+//        System.out.println(res.snd);
+//    }
+
     @Test
-    public void emulateGrammarDec() throws Exception {
-        BufferedReader br = getBufferedReader("dec.txt");
-        TuringMachine dec = readMT(br, "dec.jff");
-        Grammar decGrammar = TuringMachineConvertor.TuringMachineToGrammar0(dec);
+    public void emulateGrammarSimple() throws Exception {
+        BufferedReader br = getBufferedReader("test2.jff");
+        TuringMachine machine = readMTWholeFile(br);
+        Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
         CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
-        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(dec.initialState.name), new CompositeSymbol("a", "a"),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"), new CompositeSymbol("a", "a"))
+        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
+                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"), new CompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
-        List<Integer> res = decGrammar.emulateGrammar0Partially(input, 10);
-        for (Integer i : res) {
-            System.out.println(decGrammar.productions.get(i));
-        }
-        System.out.println(res);
+        Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 10);
+        System.out.println(res.snd);
     }
 
     @Test
     public void emulateGrammar() throws Exception {
-        BufferedReader br = getBufferedReader("fullMT.txt");
-        TuringMachine dec = readMT(br, "automaton");
-        Grammar decGrammar = TuringMachineConvertor.TuringMachineToGrammar0(dec);
+        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        TuringMachine machine = readMTWholeFile(br);
+        Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
         CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
-        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(dec.initialState.name),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"), new CompositeSymbol("1", "1"))
+        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
+                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
+                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"))
                 .collect(Collectors.toList());
-        List<Integer> res = decGrammar.emulateGrammar0Partially(input, 100);
-        for (Integer i : res) {
-            System.out.println(decGrammar.productions.get(i));
-        }
-        System.out.println(res);
+        Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 100);
+        System.out.println(res.snd);
+        System.out.println(res.fst);
     }
 }

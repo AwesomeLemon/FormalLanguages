@@ -6,10 +6,16 @@ package com.mtgrammars;
 public class CompositeSymbol extends Symbol {
     final String value2;
 
+    public CompositeSymbol(CompositeSymbol symbol) {
+        super(symbol.value);
+        value2 = symbol.value2;
+    }
+
     public CompositeSymbol(String value, String value2) {
         super(value);
         this.value2 = value2;
     }
+
 
     public CompositeSymbol(Symbol symbol) {
         super(symbol.value);
@@ -26,9 +32,9 @@ public class CompositeSymbol extends Symbol {
 
     @Override
     public String toString() {
-        return "CompositeSymbol{" +
-                super.toString() + ", Symbol {" + value2 + "}" +
-                '}';
+        return "(" +
+                super.toString() + ", {" + value2 + "}" +
+                ')';
     }
 
     @Override

@@ -6,13 +6,17 @@ package com.mtgrammars;
 public class Symbol {
     final String value;
 
+    public Symbol(Symbol symbol) {
+        value = symbol.value;
+    }
+
     public Symbol(String value) {
         this.value = value;
     }
 
     @Override
     public String toString() {
-        return "Symbol{" +
+        return "{" +
                 value +
                 '}';
     }

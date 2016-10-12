@@ -70,15 +70,35 @@ public class TuringMachine {
         String closingTag = String.format("</%1$s>", name);
 
         while (true) {
-            while ((line = br.readLine().trim()).isEmpty() && !line.equals(closingTag)) {}
+            //"|| line.contains("<Machine")" is a quick but dirty hack. Because of it, other than my TM may not parse.
+            while (((line = br.readLine().trim()).isEmpty() || line.contains("<Machine")) && !line.contains(closingTag)) {}
 
-            if (line.equals(closingTag)) return new TuringMachine(blocks, transitions, mts);
+            if (line.contains(closingTag)) return new TuringMachine(blocks, transitions, mts);
 
-            String innerMTname = line.trim().substring(1, line.length() - 1);
+            String innerMTname = line.substring(line.indexOf('<') + 1, line.lastIndexOf('>'));
             TuringMachine innerTuringMachine = readMT(br, innerMTname);
 
             mts.put(innerMTname, innerTuringMachine);
         }
+    }
+
+    void addPrefixToStates(String prefix) {
+
+    }
+
+    void unrollInnerTMs() {
+        for (int i = 0; i < blocks.size(); i++) {
+            if(associatedMTs.containsKey(blocks.get(i).name)) {
+
+            }
+        }
+    }
+
+    static TuringMachine readMTWholeFile(BufferedReader br) throws Exception {
+        br.readLine();
+        br.readLine();
+        br.readLine();
+        return readMT(br, "automaton");
     }
 
     @Override

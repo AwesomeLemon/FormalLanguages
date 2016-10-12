@@ -1,5 +1,6 @@
 package com.mtgrammars;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,6 +11,17 @@ import java.util.stream.Stream;
 class Production {
     List<Symbol>  left;
     List<Symbol> right;
+
+    public Production(Production production) {
+        this.left = new ArrayList<>();
+        for (Symbol sym : production.left) {
+            left.add(new Symbol(sym));
+        }
+        this.right = new ArrayList<>();
+        for (Symbol sym : production.right) {
+            right.add(new Symbol(sym));
+        }
+    }
 
     public Production(Symbol left, List<Symbol> right) {
         this.left = Stream.of(left).collect(Collectors.toList());
@@ -33,9 +45,9 @@ class Production {
 
     @Override
     public String toString() {
-        return "Production{" +
+        return "Pro{" +
                 left +
-                ", " + right +
+                " ----> " + right +
                 '}';
     }
 }
