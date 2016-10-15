@@ -1,4 +1,4 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 import java.util.ArrayList;
 import java.util.List;

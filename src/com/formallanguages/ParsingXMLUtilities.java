@@ -1,4 +1,4 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 /**
  * Created by Alex on 02.10.2016.

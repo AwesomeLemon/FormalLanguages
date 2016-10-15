@@ -1,4 +1,4 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
 
-import static com.mtgrammars.GrammarUtilities.otherTapeToString;
+import static com.formallanguages.GrammarUtilities.otherTapeToString;
 
 /**
  * Created by Alex on 10.10.2016.

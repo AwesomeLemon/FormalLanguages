@@ -1,4 +1,4 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,87 +9,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.mtgrammars.TuringMachine.parseFromFile;
-import static com.mtgrammars.StateTuringMachine.readState;
-import static com.mtgrammars.TuringMachine.parseWholeFileToTuringMachine;
+import static com.formallanguages.TuringMachine.parseWholeFileToTuringMachine;
 
 /**
- * Created by Alex on 02.10.2016.
+ * Created by Alex on 15.10.2016.
  */
-
-public class TuringMachineTest {
+public class EmulatingGrammar0Test {
     private BufferedReader getBufferedReader(String filename) throws FileNotFoundException {
         InputStream fis = new FileInputStream(filename);
         InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
         return new BufferedReader(isr);
     }
-
-    @Test
-    public void readStateTest() throws IOException {
-        BufferedReader br = getBufferedReader("block.txt");
-        for (int i = 0; i < 5; i++) {
-            StateTuringMachine bl = readState(br);
-            System.out.println(bl);
-        }
-        //it works if it doesn't fail.
-    }
-
-    @Test
-    public void readTransitionTest() throws IOException {
-        BufferedReader br = getBufferedReader("trans.txt");
-        for (int i = 0; i < 5; i++) {
-            TransitionTuringMachine tr = TransitionTuringMachine.readTransition(br);
-            System.out.println(tr);
-        }
-        //it works if it doesn't fail.
-    }
-
-    @Test
-    public void parseEmptyClosingTagTest() {
-        Assert.assertEquals(ParsingXMLUtilities.parseEmptyClosingTag("</dec.jff>"), "dec.jff");
-    }
-
-    @Test
-    public void readSimpleTuringMachine() throws IOException {
-        BufferedReader br = getBufferedReader("dec.txt");
-        TuringMachine dec = parseFromFile(br, "dec.jff");
-        System.out.println(dec);
-        //it works if it doesn't fail.
-    }
-
-    @Test
-    public void readSeveralSimpleTuringMachines() throws IOException {
-        BufferedReader br = getBufferedReader("decCloneShort.txt");
-        TuringMachine turingMachine = parseFromFile(br, "automaton");
-        System.out.println(turingMachine);
-        //it works if it doesn't fail.
-    }
-
-    @Test
-    public void readTuringMachineWithInnerTuringMachines() throws IOException {
-        BufferedReader br = getBufferedReader("fullMT.txt");
-        TuringMachine turingMachine = parseFromFile(br, "automaton");
-        System.out.println(turingMachine);
-        //it works if it doesn't fail.
-    }
-
-    @Test
-    public void readTuringMachineWithInnerTuringMachinesWholeFile() throws IOException {
-        BufferedReader br = getBufferedReader("MTforPrimes.xml");
-        TuringMachine turingMachine = parseWholeFileToTuringMachine(br);
-        System.out.println(turingMachine);
-        //it works if it doesn't fail.
-    }
-
-    @Test
-    public void convertSimpleTuringMachineToGrammar0() throws IOException {
-        BufferedReader br = getBufferedReader("dec.txt");
-        TuringMachine dec = parseFromFile(br, "dec.jff");
-        Grammar decGrammar = TuringMachineToGrammarConvertor.TuringMachineToGrammar0(dec);
-        System.out.println(decGrammar);
-        //it works if it doesn't fail.
-    }
-
     private Pair<Grammar, TuringMachine> getGrammarAndTM(String fileName) throws IOException {
         return getGrammarAndTM(fileName, true);
     }
@@ -140,7 +70,7 @@ public class TuringMachineTest {
         Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("MTforPrimes.xml");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
-        
+
         CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
                 new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
@@ -168,15 +98,6 @@ public class TuringMachineTest {
         System.out.println(res.snd);
         System.out.println(res.fst);
     }
-
-    @Test
-    public void unrollInnerStates() throws IOException {
-        BufferedReader br = getBufferedReader("MTforPrimes.xml");
-        TuringMachine machine = parseWholeFileToTuringMachine(br);
-        machine.flatten();
-        System.out.println(machine);
-    }
-
     @Test
     public void unrollInnerStatesAndEmulateSimpleGoodInput() throws Exception {
         Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("test2.jff");

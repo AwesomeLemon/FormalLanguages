@@ -1,9 +1,9 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static com.mtgrammars.ParsingXMLUtilities.getXmlElementsContentSingleLine;
+import static com.formallanguages.ParsingXMLUtilities.getXmlElementsContentSingleLine;
 
 /**
  * Created by Alex on 02.10.2016.

@@ -1,4 +1,4 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 import java.io.BufferedReader;
 import java.io.IOException;

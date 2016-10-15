@@ -1,11 +1,11 @@
-package com.mtgrammars;
+package com.formallanguages;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
-import static com.mtgrammars.StateTuringMachine.readState;
-import static com.mtgrammars.TransitionTuringMachine.readTransition;
+import static com.formallanguages.StateTuringMachine.readState;
+import static com.formallanguages.TransitionTuringMachine.readTransition;
 
 /**
  * Created by Alex on 07.10.2016.
