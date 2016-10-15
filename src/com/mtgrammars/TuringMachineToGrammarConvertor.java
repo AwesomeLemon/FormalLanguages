@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 /**
  * Created by Alex on 10.10.2016.
  */
-public class TuringMachineConvertor {
+public class TuringMachineToGrammarConvertor {
     public static Grammar TuringMachineToGrammar0(TuringMachine tm){
         HashSet<Symbol> terminals = tm.inputAlphabet.stream()
                 .map(Symbol::new).collect(Collectors.toCollection(HashSet::new));
@@ -20,8 +20,7 @@ public class TuringMachineConvertor {
         }
         HashSet<Symbol> terminalsAndEps = new HashSet<>(terminals);
         Symbol epsilon = new Symbol("eps");
-        terminalsAndEps.add(epsilon);
-
+        terminalsAndEps.add(epsilon);//there's need to iterate over such series several times.
 
         Symbol a1 = new Symbol("A1");
         Symbol a2 = new Symbol("A2");
@@ -44,14 +43,14 @@ public class TuringMachineConvertor {
         productions.add(new Production(a3, epsilon));
 
         for (TransitionTuringMachine transition : tm.transitions) {
-            BlockTuringMachine currentBlock = tm.blocks.stream().filter(x -> x.id == transition.from).findFirst().get();
-            BlockTuringMachine nextBlock = tm.blocks.stream().filter(x -> x.id == transition.to).findFirst().get();
+            StateTuringMachine currentState = tm.blocks.stream().filter(x -> x.id == transition.from).findFirst().get();
+            StateTuringMachine nextState = tm.blocks.stream().filter(x -> x.id == transition.to).findFirst().get();
             if (transition.direction == TransitionTuringMachine.Direction.Right) {
                 for (Symbol a : terminalsAndEps) {
                     productions.add(new Production(
-                            Stream.of(new Symbol(currentBlock.name), new CompositeSymbol(a, transition.read))
+                            Stream.of(new Symbol(currentState.name), new CompositeSymbol(a, transition.read))
                                     .collect(Collectors.toList()),
-                            Stream.of(new CompositeSymbol(a, transition.write), new Symbol(nextBlock.name))
+                            Stream.of(new CompositeSymbol(a, transition.write), new Symbol(nextState.name))
                                     .collect(Collectors.toList()))
                     );
                 }
@@ -62,31 +61,31 @@ public class TuringMachineConvertor {
                         for (String E : tm.tapeAlphabet) {
                             CompositeSymbol bEsymbol = new CompositeSymbol(b, E);
                             productions.add(new Production(
-                                    Stream.of(bEsymbol, new Symbol(currentBlock.name), new CompositeSymbol(a, transition.read)).collect(Collectors.toList()),
-                                    Stream.of(new Symbol(nextBlock.name), bEsymbol, new CompositeSymbol(a, transition.write)).collect(Collectors.toList())
+                                    Stream.of(bEsymbol, new Symbol(currentState.name), new CompositeSymbol(a, transition.read)).collect(Collectors.toList()),
+                                    Stream.of(new Symbol(nextState.name), bEsymbol, new CompositeSymbol(a, transition.write)).collect(Collectors.toList())
                             ));
                         }
                     }
                 }
             }
-
         }
-        for (BlockTuringMachine block : tm.finalStates) {
-                Symbol curBlockSymbol = new Symbol(block.name);
-                for (Symbol a : terminalsAndEps) {
-                    for (String C : tm.tapeAlphabet) {
-                        CompositeSymbol aCsymbol = new CompositeSymbol(a, C);
-                        productions.add(new Production(
-                                Stream.of(aCsymbol, curBlockSymbol).collect(Collectors.toList()),
-                                Stream.of(curBlockSymbol, a, curBlockSymbol).collect(Collectors.toList())
-                        ));
-                        productions.add(new Production(
-                                Stream.of(curBlockSymbol, aCsymbol).collect(Collectors.toList()),
-                                Stream.of(curBlockSymbol, a, curBlockSymbol).collect(Collectors.toList())
-                        ));
-                    }
+
+        for (StateTuringMachine block : tm.finalStates) {
+            Symbol curBlockSymbol = new Symbol(block.name);
+            for (Symbol a : terminalsAndEps) {
+                for (String C : tm.tapeAlphabet) {
+                    CompositeSymbol aCsymbol = new CompositeSymbol(a, C);
+                    productions.add(new Production(
+                            Stream.of(aCsymbol, curBlockSymbol).collect(Collectors.toList()),
+                            Stream.of(curBlockSymbol, a, curBlockSymbol).collect(Collectors.toList())
+                    ));
+                    productions.add(new Production(
+                            Stream.of(curBlockSymbol, aCsymbol).collect(Collectors.toList()),
+                            Stream.of(curBlockSymbol, a, curBlockSymbol).collect(Collectors.toList())
+                    ));
                 }
-                productions.add(new Production(curBlockSymbol, epsilon));
+            }
+            productions.add(new Production(curBlockSymbol, epsilon));
         }
         return new Grammar(nonterminals, terminals, a1, productions);
     }

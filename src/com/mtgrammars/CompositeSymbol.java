@@ -22,12 +22,11 @@ public class CompositeSymbol extends Symbol {
         this.value2 = symbol.value;
     }
     public CompositeSymbol(Symbol symbol1, Symbol symbol2) {
-        super(symbol1.value);
-        this.value2 = symbol2.value;
+        this(symbol1.value, symbol2.value);
     }
+
     public CompositeSymbol(Symbol symbol1, String value2) {
-        super(symbol1.value);
-        this.value2 = value2;
+        this(symbol1.value, value2);
     }
 
     @Override

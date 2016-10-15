@@ -1,9 +1,5 @@
 package com.mtgrammars;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Created by Alex on 02.10.2016.
  */
@@ -19,6 +15,6 @@ class ParsingXMLUtilities {
 
     //Works for lines like "</smth>"
     static String parseEmptyClosingTag(String tag) { // 'empty' means smth like "</dec.jff>"
-        return tag.substring(2, tag.length() - 1);
+        return tag.trim().substring(2, tag.length() - 1);
     }
 }

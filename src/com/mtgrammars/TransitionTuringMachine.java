@@ -1,6 +1,7 @@
 package com.mtgrammars;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 import static com.mtgrammars.ParsingXMLUtilities.getXmlElementsContentSingleLine;
 
@@ -10,9 +11,9 @@ import static com.mtgrammars.ParsingXMLUtilities.getXmlElementsContentSingleLine
 public class TransitionTuringMachine {
     int from;
     int to;
-    String read;
-    String write;
-    Direction direction;
+    final String read;
+    final String write;
+    final Direction direction;
 
     public enum Direction {Left, Right}
 
@@ -24,7 +25,15 @@ public class TransitionTuringMachine {
         this.direction = transition.direction;
     }
 
-    static TransitionTuringMachine readTransition(BufferedReader br) throws Exception {
+    public TransitionTuringMachine(int from, int to, String read, String write, Direction direction) {
+        this.from = from;
+        this.to = to;
+        this.read = read;
+        this.write = write;
+        this.direction = direction;
+    }
+
+    static TransitionTuringMachine readTransition(BufferedReader br) throws IOException {
         String begin = br.readLine();
         if (begin.contains("<!--The list of automata-->")) return null;
 
@@ -41,7 +50,8 @@ public class TransitionTuringMachine {
         String write =  value == null ? "blank" : value;
 
         value = getXmlElementsContentSingleLine(br.readLine());
-        TransitionTuringMachine.Direction dir = value.equals("L") ? TransitionTuringMachine.Direction.Left : TransitionTuringMachine.Direction.Right;
+        TransitionTuringMachine.Direction dir = value.equals("L") ? TransitionTuringMachine.Direction.Left
+                                                                  : TransitionTuringMachine.Direction.Right;
 
         br.readLine();//</transition>
 
@@ -57,13 +67,5 @@ public class TransitionTuringMachine {
                 ", write='" + write + '\'' +
                 ", direction=" + direction +
                 '}';
-    }
-
-    public TransitionTuringMachine(int from, int to, String read, String write, Direction direction) {
-        this.from = from;
-        this.to = to;
-        this.read = read;
-        this.write = write;
-        this.direction = direction;
     }
 }

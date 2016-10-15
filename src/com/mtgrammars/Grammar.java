@@ -7,14 +7,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
 
+import static com.mtgrammars.GrammarUtilities.otherTapeToString;
+
 /**
  * Created by Alex on 10.10.2016.
  */
 public class Grammar {
-    HashSet<Symbol> nonterminals;
-    HashSet<Symbol> terminals;
-    Symbol axiom;
-    List<Production> productions;
+    private HashSet<Symbol> nonterminals;
+    private HashSet<Symbol> terminals;
+    private Symbol axiom;
+    private List<Production> productions;
 
     public Grammar(HashSet<Symbol> nonterminals, HashSet<Symbol> terminals, Symbol axiom, List<Production> productions) {
         this.nonterminals = nonterminals;
@@ -36,75 +38,31 @@ public class Grammar {
     //emulates starting after (5): A3 -> eps.
     public Pair<List<Integer>, String> emulateGrammar0Partially(List<Symbol> tape, int maxTapeCount) throws Exception {
         CompositeSymbol epsBlankSym = new CompositeSymbol("eps", "blank");
-        ArrayList<Integer> res = new ArrayList<>();
+        ArrayList<Integer> usedProductions = new ArrayList<>();
         for (int i = 0; i < maxTapeCount; i++) {
             tape.add(epsBlankSym);
         }
         BufferedWriter bw = new BufferedWriter(new FileWriter("out.txt"));
-        while(true) {
-            int prodInd = performFirstFromLeftProduction(tape);
+        while (true) {
+            int prodInd = performFirstFromStartProduction(tape);
 
             if (prodInd == -1) {
-                tapeRemoveEps(tape);
+                GrammarUtilities.tapeRemoveEpsilons(tape);
                 bw.close();
-                if (tapeContainsNonTerminal(tape)) {
+                if (GrammarUtilities.tapeContainsNonTerminal(tape, terminals)) {
                     throw new Exception("Grammar cannot produce string of terminals from given input");
                     //grammar cannot process given input, 'cause corresponding TM doesn't accept it.
                     //or the grammar is wrong.
                 }
-                return new Pair<>(res, tapeToString(tape));
+                return new Pair<>(usedProductions, GrammarUtilities.tapeToString(tape));
             }
 
             bw.write(productions.get(prodInd) + ": " + otherTapeToString(tape) + "\n");
-            res.add(prodInd);
+            usedProductions.add(prodInd);
         }
     }
 
-    private void tapeRemoveEps(List<Symbol> tape) {
-        Symbol eps = new Symbol("eps");
-        while (tape.contains(eps)) tape.remove(eps);
-    }
-
-    private boolean tapeContainsNonTerminal(List<Symbol> tape) {
-        for (Symbol symbol : tape) {
-            if (!terminals.contains(symbol)) return true;
-        }
-        return false;
-    }
-
-    private String tapeToString(List<Symbol> tape) {
-        StringBuilder sb = new StringBuilder();
-        for (Symbol symbol : tape) {
-            if (!symbol.value.equals("eps")) sb.append(symbol.value);
-        }
-        return sb.toString();
-    }
-    private String otherTapeToString(List<Symbol> tape) {
-        StringBuilder sb = new StringBuilder();
-        for (Symbol symbol : tape) {
-            if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
-            if (symbol instanceof CompositeSymbol) {
-                String sym = ((CompositeSymbol) symbol).value2;
-                if (sym.equals("blank")) {
-                    sb.append("_");
-                    continue;
-                }
-                if (!sym.equals("eps")) sb.append(sym);
-            }
-        }
-        return sb.toString();
-    }
-    class Pair<T1, T2> {
-        T1 fst;
-        T2 snd;
-
-        public Pair(T1 fst, T2 snd) {
-            this.fst = fst;
-            this.snd = snd;
-        }
-    }
-
-    private int performFirstFromLeftProduction(List<Symbol> input) {
+    private int performFirstFromStartProduction(List<Symbol> input) {
         int productionStartInd = grammar0FindFirst6thTypeProduction();
         for (int i = productionStartInd; i < productions.size(); i++) {
             List<Symbol> left = productions.get(i).left;
