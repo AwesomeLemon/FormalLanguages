@@ -13,6 +13,14 @@ public class BlockTuringMachine {
     int id;
 //    ArrayList<TransitionTuringMachine> transitions;
 
+    public BlockTuringMachine(BlockTuringMachine block) {
+        isInitial = block.isInitial;
+        isFinal = block.isFinal;
+        tag = block.tag;
+        name = block.name;
+        id = block.id;
+    }
+
     static BlockTuringMachine readBlock(BufferedReader br) throws Exception {
         String line = br.readLine();
         if (line.contains("<!--The list of transitions.-->")) return null;

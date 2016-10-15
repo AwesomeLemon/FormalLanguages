@@ -110,9 +110,10 @@ public class TuringMachineTest {
     }
 
     @Test
-    public void emulateGrammar() throws Exception {
+    public void emulateGrammarShouldNotWork() throws Exception {
         BufferedReader br = getBufferedReader("MTforPrimes.xml");
         TuringMachine machine = readMTWholeFile(br);
+        machine.unrollInnerTMs();
         Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
         CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
@@ -120,6 +121,79 @@ public class TuringMachineTest {
                 new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"))
                 .collect(Collectors.toList());
         Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 100);
+        System.out.println(res.snd);
+        System.out.println(res.fst);
+    }
+
+    @Test
+    public void emulateGrammarShouldWork() throws Exception {
+        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        TuringMachine machine = readMTWholeFile(br);
+        machine.unrollInnerTMs();
+        Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
+        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
+                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
+                new CompositeSymbol("1", "1"))
+                .collect(Collectors.toList());
+        Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 15);
+        System.out.println(res.snd);
+        System.out.println(res.fst);
+    }
+
+    @Test
+    public void emulateGrammarShouldWork2() throws Exception {
+        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        TuringMachine machine = readMTWholeFile(br);
+        machine.unrollInnerTMs();
+        Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
+        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        CompositeSymbol one = new CompositeSymbol("1", "1");
+        CompositeSymbol zero = new CompositeSymbol("0", "0");
+        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
+                one, zero, zero, zero,
+                one)
+                .collect(Collectors.toList());
+        Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 30);
+        System.out.println(res.snd);
+        System.out.println(res.fst);
+    }
+
+    @Test
+    public void unrollInnerStates() throws Exception {
+        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        TuringMachine machine = readMTWholeFile(br);
+        machine.unrollInnerTMs();
+        System.out.println(machine);
+    }
+
+    @Test
+    public void unrollInnerStatesAndEmulateSimpleShouldWork() throws Exception {
+        BufferedReader br = getBufferedReader("test2.jff");
+        TuringMachine machine = readMTWholeFile(br);
+        machine.unrollInnerTMs();
+        Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
+        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
+                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
+                new CompositeSymbol("1", "1"))
+                .collect(Collectors.toList());
+        Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 1);
+        Assert.assertEquals(res.snd, "101");
+        System.out.println(res.snd);
+        System.out.println(res.fst);
+    }
+    @Test
+    public void unrollInnerStatesAndEmulateSimpleShouldNotWork() throws Exception {
+        BufferedReader br = getBufferedReader("test2.jff");
+        TuringMachine machine = readMTWholeFile(br);
+        machine.unrollInnerTMs();
+        Grammar grammar = TuringMachineConvertor.TuringMachineToGrammar0(machine);
+        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
+                new CompositeSymbol("blank", "blank"))
+                .collect(Collectors.toList());
+        Grammar.Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 5);
         System.out.println(res.snd);
         System.out.println(res.fst);
     }

@@ -16,6 +16,14 @@ public class TransitionTuringMachine {
 
     public enum Direction {Left, Right}
 
+    public TransitionTuringMachine(TransitionTuringMachine transition) {
+        this.from = transition.from;
+        this.to = transition.to;
+        this.read = transition.read;
+        this.write = transition.write;
+        this.direction = transition.direction;
+    }
+
     static TransitionTuringMachine readTransition(BufferedReader br) throws Exception {
         String begin = br.readLine();
         if (begin.contains("<!--The list of automata-->")) return null;

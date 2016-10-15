@@ -1,13 +1,11 @@
 package com.mtgrammars;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 /**
  * Created by Alex on 10.10.2016.
@@ -15,13 +13,13 @@ import java.util.stream.Collectors;
 public class Grammar {
     HashSet<Symbol> nonterminals;
     HashSet<Symbol> terminals;
-    Symbol Axiom;
+    Symbol axiom;
     List<Production> productions;
 
     public Grammar(HashSet<Symbol> nonterminals, HashSet<Symbol> terminals, Symbol axiom, List<Production> productions) {
         this.nonterminals = nonterminals;
         this.terminals = terminals;
-        Axiom = axiom;
+        this.axiom = axiom;
         this.productions = productions;
     }
 
@@ -30,12 +28,12 @@ public class Grammar {
         return "Grammar{" +
                 "nonterminals=" + nonterminals +
                 ", terminals=" + terminals +
-                ", Axiom=" + Axiom +
+                ", axiom=" + axiom +
                 ", productions=" + productions +
                 '}';
     }
 
-    //emulates starting from (4): A3 -> [eps, blank]A3
+    //emulates starting after (5): A3 -> eps.
     public Pair<List<Integer>, String> emulateGrammar0Partially(List<Symbol> tape, int maxTapeCount) throws Exception {
         CompositeSymbol epsBlankSym = new CompositeSymbol("eps", "blank");
         ArrayList<Integer> res = new ArrayList<>();
@@ -47,7 +45,13 @@ public class Grammar {
             int prodInd = performFirstFromLeftProduction(tape);
 
             if (prodInd == -1) {
+                tapeRemoveEps(tape);
                 bw.close();
+                if (tapeContainsNonTerminal(tape)) {
+                    throw new Exception("Grammar cannot produce string of terminals from given input");
+                    //grammar cannot process given input, 'cause corresponding TM doesn't accept it.
+                    //or the grammar is wrong.
+                }
                 return new Pair<>(res, tapeToString(tape));
             }
 
@@ -55,6 +59,19 @@ public class Grammar {
             res.add(prodInd);
         }
     }
+
+    private void tapeRemoveEps(List<Symbol> tape) {
+        Symbol eps = new Symbol("eps");
+        while (tape.contains(eps)) tape.remove(eps);
+    }
+
+    private boolean tapeContainsNonTerminal(List<Symbol> tape) {
+        for (Symbol symbol : tape) {
+            if (!terminals.contains(symbol)) return true;
+        }
+        return false;
+    }
+
     private String tapeToString(List<Symbol> tape) {
         StringBuilder sb = new StringBuilder();
         for (Symbol symbol : tape) {
@@ -93,15 +110,8 @@ public class Grammar {
             List<Symbol> left = productions.get(i).left;
             List<Symbol> right = productions.get(i).right;
             int ind = Collections.indexOfSubList(input, left);
-            if (ind < 0 || ind + left.size() >= input.size()) continue;
-            List<Symbol> inputSubList = input.subList(ind, ind + left.size());
-            if (!(inputSubList.equals(left))) {
-                int bsmth = 1;
-            }
+            if (ind < 0) continue;
             for (int j = 0; j < left.size(); j++) {
-                if (j + ind >= input.size()) {
-                    int a = 1;
-                }
                 input.remove(ind);
             }
             for (int j = 0; j < right.size(); j++) {
@@ -119,42 +129,5 @@ public class Grammar {
             if (productions.get(i).right.get(0).equals(eps)) return i + 1;
         }
         return -1;
-    }
-
-    private void mergeWithGrammar(Grammar that) {
-        terminals.addAll(that.terminals);
-        nonterminals.addAll(that.nonterminals);
-        productions.addAll(that.productions);
-    }
-
-    void mergeWithGrammarAndRename(Grammar otherGrammar, String otherTMname, TuringMachine otherTM) {
-        replaceStateNameInRightParts(new Symbol(otherTMname), otherGrammar.Axiom );
-        replaceStateNameInLeftParts(new Symbol(otherTMname), otherTM.finalStates.stream().map(x -> new Symbol(otherTMname + x.name)).collect(Collectors.toList()));
-        mergeWithGrammar(otherGrammar);
-    }
-
-    private void replaceStateNameInRightParts(Symbol target, Symbol replacement) {
-        for (Production p : productions) {
-            for (int i = 0; i < p.right.size(); i++) {
-                if (p.right.get(i).equals(target)) p.right.set(i, replacement);
-            }
-        }
-    }
-
-    private void replaceStateNameInLeftParts(Symbol target, List<Symbol> replacements) {
-        ArrayList<Production> additionalProds = new ArrayList<>();
-        for (Production p : productions) {
-            for (int i = 0; i < p.left.size(); i++) {
-                if (p.left.get(i).equals(target)) {
-                    p.left.set(i, replacements.get(0));
-                    for (int j = 1; j < replacements.size(); j++) {
-                        Production newp = new Production(p);
-                        newp.left.set(i, replacements.get(j));
-                        additionalProds.add(newp);
-                    }
-                }
-            }
-        }
-        productions.addAll(additionalProds);
     }
 }
