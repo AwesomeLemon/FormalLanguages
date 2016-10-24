@@ -7,16 +7,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
 
+import static com.formallanguages.CompositeSymbol.getCompositeSymbol;
 import static com.formallanguages.GrammarUtilities.otherTapeToString;
+import static com.formallanguages.SpecialTuringMachineSymbols.*;
 
 /**
  * Created by Alex on 10.10.2016.
  */
 public class Grammar {
-    private HashSet<Symbol> nonterminals;
-    private HashSet<Symbol> terminals;
-    private Symbol axiom;
-    private List<Production> productions;
+    private final HashSet<Symbol> nonterminals;
+    private final HashSet<Symbol> terminals;
+    private final Symbol axiom;
+    private final List<Production> productions;
 
     public Grammar(HashSet<Symbol> nonterminals, HashSet<Symbol> terminals, Symbol axiom, List<Production> productions) {
         this.nonterminals = nonterminals;
@@ -37,7 +39,7 @@ public class Grammar {
 
     //emulates starting after (5): A3 -> eps.
     public Pair<List<Integer>, String> emulateGrammar0Partially(List<Symbol> tape, int maxTapeCount) throws Exception {
-        CompositeSymbol epsBlankSym = new CompositeSymbol("eps", "blank");
+        CompositeSymbol epsBlankSym = getCompositeSymbol(EPSILON, BLANK);
         ArrayList<Integer> usedProductions = new ArrayList<>();
         for (int i = 0; i < maxTapeCount; i++) {
             tape.add(epsBlankSym);
@@ -81,7 +83,7 @@ public class Grammar {
     }
 
     private int grammar0FindFirst6thTypeProduction() {
-        Symbol eps = new Symbol("eps");
+        Symbol eps = Symbol.getSymbol(EPSILON);
         for (int i = 0; i < productions.size(); i++) {
             if (productions.get(i).right.size() > 1) continue;
             if (productions.get(i).right.get(0).equals(eps)) return i + 1;

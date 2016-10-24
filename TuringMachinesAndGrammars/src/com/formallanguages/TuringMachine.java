@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
+import static com.formallanguages.SpecialTuringMachineSymbols.BLANK;
 import static com.formallanguages.StateTuringMachine.readState;
 import static com.formallanguages.TransitionTuringMachine.readTransition;
 
@@ -61,10 +62,10 @@ public class TuringMachine {
             inputAlphabet.add(transition.read);
             inputAlphabet.add(transition.write);
         }
-        if (inputAlphabet.contains("blank")) inputAlphabet.remove("blank");
+        if (inputAlphabet.contains(BLANK)) inputAlphabet.remove(BLANK);
 
         tapeAlphabet = new HashSet<>(inputAlphabet);
-        tapeAlphabet.add("blank");
+        tapeAlphabet.add(BLANK);
 
         finalStates = new ArrayList<>();
         for (StateTuringMachine block : blocks) {

@@ -1,18 +1,30 @@
 package com.formallanguages;
 
+import java.util.HashMap;
+
 /**
  * Created by Alex on 11.10.2016.
  */
 public class Symbol {
     final String value;
 
+    //copy constructor
     public Symbol(Symbol symbol) {
         value = symbol.value;
     }
 
-    public Symbol(String value) {
+    Symbol(String value) {
         this.value = value;
     }
+
+    public static Symbol getSymbol(String value) {
+        if (symbols.containsKey(value)) return symbols.get(value);
+        Symbol symbol = new Symbol(value);
+        symbols.put(value, symbol);
+        return symbol;
+    }
+
+    private static HashMap<String, Symbol> symbols = new HashMap<>();
 
     @Override
     public String toString() {

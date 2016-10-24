@@ -23,7 +23,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void readStateTest() throws IOException {
-        BufferedReader br = getBufferedReader("block.txt");
+        BufferedReader br = getBufferedReader("blocksOnly.txt");
         for (int i = 0; i < 5; i++) {
             StateTuringMachine bl = readState(br);
             System.out.println(bl);
@@ -33,7 +33,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void readTransitionTest() throws IOException {
-        BufferedReader br = getBufferedReader("trans.txt");
+        BufferedReader br = getBufferedReader("transitionsOnly.txt");
         for (int i = 0; i < 5; i++) {
             TransitionTuringMachine tr = TransitionTuringMachine.readTransition(br);
             System.out.println(tr);
@@ -64,7 +64,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void readTuringMachineWithInnerTuringMachines() throws IOException {
-        BufferedReader br = getBufferedReader("fullMT.txt");
+        BufferedReader br = getBufferedReader("checkIfPrimeTM_short.txt");
         TuringMachine turingMachine = parseFromFile(br, "automaton");
         System.out.println(turingMachine);
         //it works if it doesn't fail.
@@ -72,7 +72,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void readTuringMachineWithInnerTuringMachinesWholeFile() throws IOException {
-        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        BufferedReader br = getBufferedReader("checkIfPrimeTM.xml");
         TuringMachine turingMachine = parseWholeFileToTuringMachine(br);
         System.out.println(turingMachine);
         //it works if it doesn't fail.
@@ -89,7 +89,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void unrollInnerStates() throws IOException {
-        BufferedReader br = getBufferedReader("MTforPrimes.xml");
+        BufferedReader br = getBufferedReader("checkIfPrimeTM.xml");
         TuringMachine machine = parseWholeFileToTuringMachine(br);
         machine.flatten();
         System.out.println(machine);

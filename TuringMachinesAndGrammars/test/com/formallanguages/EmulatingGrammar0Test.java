@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.formallanguages.CompositeSymbol.getCompositeSymbol;
+import static com.formallanguages.SpecialTuringMachineSymbols.*;
 import static com.formallanguages.TuringMachine.parseWholeFileToTuringMachine;
 
 /**
@@ -33,13 +35,13 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammarSimple() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("test2.jff", false);
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("flipTwoBytesTM.jff", false);
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"), new CompositeSymbol("1", "1"))
+                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"), getCompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 10);
         Assert.assertEquals(res.snd, "101");
@@ -48,14 +50,14 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammarWithInputThatBreaksIt() throws IOException {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("MTforPrimes.xml");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.xml");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"))
+                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
+                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"))
                 .collect(Collectors.toList());
         try {
             Pair<List<Integer>, String> res = grammar.emulateGrammar0Partially(input, 100);
@@ -67,14 +69,14 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammar0WithGoodInput() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("MTforPrimes.xml");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.xml");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
-                new CompositeSymbol("1", "1"))
+                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
+                getCompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 15);
         System.out.println(res.snd);
@@ -83,13 +85,13 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammar0WithAnotherGoodInput() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("MTforPrimes.xml");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.xml");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
-        CompositeSymbol one = new CompositeSymbol("1", "1");
-        CompositeSymbol zero = new CompositeSymbol("0", "0");
+        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
+        CompositeSymbol one = getCompositeSymbol("1", "1");
+        CompositeSymbol zero = getCompositeSymbol("0", "0");
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
                 one, zero, zero, zero,
                 one)
@@ -100,14 +102,14 @@ public class EmulatingGrammar0Test {
     }
     @Test
     public void unrollInnerStatesAndEmulateSimpleGoodInput() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("test2.jff");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("flipTwoBytesTM.jff");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                new CompositeSymbol("1", "1"), new CompositeSymbol("0", "0"),
-                new CompositeSymbol("1", "1"))
+                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
+                getCompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 1);
         Assert.assertEquals(res.snd, "101");
@@ -116,13 +118,13 @@ public class EmulatingGrammar0Test {
     }
     @Test
     public void unrollInnerStatesAndEmulateSimpleBadInput() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("test2.jff");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("flipTwoBytesTM.jff");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = new CompositeSymbol("eps", "blank");
+        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                new CompositeSymbol("blank", "blank"))
+                getCompositeSymbol(BLANK, BLANK))
                 .collect(Collectors.toList());
         try {
             Pair<List<Integer>, String> res = grammar.emulateGrammar0Partially(input, 5);
