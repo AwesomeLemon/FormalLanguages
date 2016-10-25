@@ -19,7 +19,7 @@ public class ConvertingTuringMachineToGrammarTest {
     public void convertSimpleTuringMachineToGrammar0() throws IOException {
         BufferedReader br = getBufferedReader("dec.txt");
         TuringMachine dec = parseFromFile(br, "dec.jff");
-        Grammar decGrammar = TuringMachineToGrammarConvertor.TuringMachineToGrammar0(dec);
+        Grammar decGrammar = TuringMachineToGrammarConvertor.toType0Grammar(dec);
         System.out.println(decGrammar);
         //it works if it doesn't fail.
     }

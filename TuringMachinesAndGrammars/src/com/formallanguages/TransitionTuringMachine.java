@@ -5,9 +5,6 @@ import java.io.IOException;
 
 import static com.formallanguages.ParsingXMLUtilities.getXmlElementsContentSingleLine;
 
-/**
- * Created by Alex on 02.10.2016.
- */
 public class TransitionTuringMachine {
     int from;
     int to;

@@ -12,6 +12,7 @@ class Production {
     final List<Symbol>  left;
     final List<Symbol> right;
 
+    //copy constructor
     public Production(Production production) {
         this.left = new ArrayList<>();
         for (Symbol sym : production.left) {

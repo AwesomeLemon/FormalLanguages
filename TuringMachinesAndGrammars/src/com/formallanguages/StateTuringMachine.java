@@ -3,9 +3,8 @@ package com.formallanguages;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-/**
- * Created by Alex on 02.10.2016.
- */
+import static com.formallanguages.ParsingXMLUtilities.parseStateOpenTag;
+
 public class StateTuringMachine {
     final boolean isInitial;
     final boolean isFinal;
@@ -65,18 +64,6 @@ public class StateTuringMachine {
         if (line.contains("<final/>")) isFinal = true;
         if (!(isFinal || isInitial) && line.contains("</block>")) return null;
         return new Pair<>(isInitial, isFinal);
-    }
-
-    private static Pair<Integer, String> parseStateOpenTag(String stateOpenTagLine) {//something like '<block id="2" name="q2">'
-        String[] tagItems = stateOpenTagLine.trim().split(" ");
-        assert tagItems[0].contains("block");
-
-        String idInQuotes = tagItems[1].split("=")[1];
-        int id = Integer.parseInt(idInQuotes.substring(1, idInQuotes.length() - 1));
-
-        String nameInQuotes = tagItems[2].split("=")[1];
-        String name = nameInQuotes.substring(nameInQuotes.indexOf("\"") + 1, nameInQuotes.lastIndexOf("\""));
-        return new Pair<>(id, name);
     }
 
     @Override

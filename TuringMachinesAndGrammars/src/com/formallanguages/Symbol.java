@@ -2,9 +2,6 @@ package com.formallanguages;
 
 import java.util.HashMap;
 
-/**
- * Created by Alex on 11.10.2016.
- */
 public class Symbol {
     final String value;
 

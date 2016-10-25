@@ -29,7 +29,7 @@ public class EmulatingGrammar0Test {
         BufferedReader br = getBufferedReader(fileName);
         TuringMachine machine = parseWholeFileToTuringMachine(br);
         if (ifTMshouldBeFlattened) machine.flatten();
-        return new Pair<>(TuringMachineToGrammarConvertor.TuringMachineToGrammar0(machine),
+        return new Pair<>(TuringMachineToGrammarConvertor.toType0Grammar(machine),
                 machine);
     }
 
@@ -43,7 +43,7 @@ public class EmulatingGrammar0Test {
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
                 getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"), getCompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
-        Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 10);
+        Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 10);
         Assert.assertEquals(res.snd, "101");
         System.out.println(res.snd);
     }
@@ -60,7 +60,7 @@ public class EmulatingGrammar0Test {
                 getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"))
                 .collect(Collectors.toList());
         try {
-            Pair<List<Integer>, String> res = grammar.emulateGrammar0Partially(input, 100);
+            Pair<List<Integer>, String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 100);
         }
         catch (Exception ex) {
             Assert.assertEquals(ex.getMessage(), "Grammar cannot produce string of terminals from given input");
@@ -78,7 +78,7 @@ public class EmulatingGrammar0Test {
                 getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
                 getCompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
-        Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 15);
+        Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 15);
         System.out.println(res.snd);
         System.out.println(res.fst);
     }
@@ -96,7 +96,7 @@ public class EmulatingGrammar0Test {
                 one, zero, zero, zero,
                 one)
                 .collect(Collectors.toList());
-        Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 30);
+        Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 30);
         System.out.println(res.snd);
         System.out.println(res.fst);
     }
@@ -111,7 +111,7 @@ public class EmulatingGrammar0Test {
                 getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
                 getCompositeSymbol("1", "1"))
                 .collect(Collectors.toList());
-        Pair<List<Integer>,String> res = grammar.emulateGrammar0Partially(input, 1);
+        Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 1);
         Assert.assertEquals(res.snd, "101");
         System.out.println(res.snd);
         System.out.println(res.fst);
@@ -127,7 +127,7 @@ public class EmulatingGrammar0Test {
                 getCompositeSymbol(BLANK, BLANK))
                 .collect(Collectors.toList());
         try {
-            Pair<List<Integer>, String> res = grammar.emulateGrammar0Partially(input, 5);
+            Pair<List<Integer>, String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 5);
         }
         catch (Exception ex) {
             Assert.assertEquals(ex.getMessage(), "Grammar cannot produce string of terminals from given input");

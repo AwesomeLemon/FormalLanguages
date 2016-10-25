@@ -2,17 +2,17 @@ package com.formallanguages;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.formallanguages.CompositeSymbol.getCompositeSymbol;
 import static com.formallanguages.CompositeSymbol.getRepeatedSymbol;
 import static com.formallanguages.SpecialTuringMachineSymbols.*;
 
-/**
- * Created by Alex on 10.10.2016.
- */
 public class TuringMachineToGrammarConvertor {
-    public static Grammar TuringMachineToGrammar0(TuringMachine tm){
+
+    /** Converts Turing Machine to type zero grammar.
+     * Implements algorithm, described in Martynenko's "Languages and translations". (ISBN 5-288-02870-2)
+     */
+    public static Grammar toType0Grammar(TuringMachine tm){
         HashSet<Symbol> terminals = tm.inputAlphabet.stream()
                 .map(Symbol::getSymbol).collect(Collectors.toCollection(HashSet::new));
         HashSet<Symbol> nonterminals = new HashSet<>();
@@ -33,8 +33,7 @@ public class TuringMachineToGrammarConvertor {
         nonterminals.add(a2);
         nonterminals.add(a3);
 
-        nonterminals.addAll(tm.blocks.stream().map(x -> Symbol.getSymbol(x.name))
-                .collect(Collectors.toList()));
+        nonterminals.addAll(tm.blocks.stream().map(x -> Symbol.getSymbol(x.name)).collect(Collectors.toList()));
 
         ArrayList<Production> productions = new ArrayList<>();
         productions.add(new Production(a1, Symbol.getSymbol(tm.initialState.name)));
@@ -52,23 +51,21 @@ public class TuringMachineToGrammarConvertor {
             if (transition.direction == TransitionTuringMachine.Direction.Right) {
                 for (Symbol a : terminalsAndEps) {
                     productions.add(new Production(
-                            Stream.of(Symbol.getSymbol(currentState.name), getCompositeSymbol(a, transition.read))
-                                    .collect(Collectors.toList()),
-                            Stream.of(getCompositeSymbol(a, transition.write), Symbol.getSymbol(nextState.name))
-                                    .collect(Collectors.toList()))
+                             Arrays.asList(Symbol.getSymbol(currentState.name), getCompositeSymbol(a, transition.read)),
+                             Arrays.asList(getCompositeSymbol(a, transition.write), Symbol.getSymbol(nextState.name)))
                     );
                 }
+                continue;
             }
-            else {
-                for (Symbol a : terminalsAndEps) {
-                    for (Symbol b :  terminalsAndEps) {
-                        for (String E : tm.tapeAlphabet) {
-                            CompositeSymbol bEsymbol = getCompositeSymbol(b, E);
-                            productions.add(new Production(
-                                    Stream.of(bEsymbol, Symbol.getSymbol(currentState.name), getCompositeSymbol(a, transition.read)).collect(Collectors.toList()),
-                                    Stream.of(Symbol.getSymbol(nextState.name), bEsymbol, getCompositeSymbol(a, transition.write)).collect(Collectors.toList())
-                            ));
-                        }
+            for (Symbol a : terminalsAndEps) {
+                for (Symbol b :  terminalsAndEps) {
+                    for (String E : tm.tapeAlphabet) {
+                        CompositeSymbol bEsymbol = getCompositeSymbol(b, E);
+                        productions.add(new Production(
+                            Arrays.asList(bEsymbol, Symbol.getSymbol(currentState.name),
+                                    getCompositeSymbol(a, transition.read)),
+                            Arrays.asList(Symbol.getSymbol(nextState.name), bEsymbol,
+                                    getCompositeSymbol(a, transition.write))));
                     }
                 }
             }
@@ -80,12 +77,12 @@ public class TuringMachineToGrammarConvertor {
                 for (String C : tm.tapeAlphabet) {
                     CompositeSymbol aCsymbol = getCompositeSymbol(a, C);
                     productions.add(new Production(
-                            Stream.of(aCsymbol, curBlockSymbol).collect(Collectors.toList()),
-                            Stream.of(curBlockSymbol, a, curBlockSymbol).collect(Collectors.toList())
+                             Arrays.asList(aCsymbol, curBlockSymbol),
+                             Arrays.asList(curBlockSymbol, a, curBlockSymbol)
                     ));
                     productions.add(new Production(
-                            Stream.of(curBlockSymbol, aCsymbol).collect(Collectors.toList()),
-                            Stream.of(curBlockSymbol, a, curBlockSymbol).collect(Collectors.toList())
+                             Arrays.asList(curBlockSymbol, aCsymbol),
+                             Arrays.asList(curBlockSymbol, a, curBlockSymbol)
                     ));
                 }
             }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.formallanguages.SpecialTuringMachineSymbols.BLANK;
+import static com.formallanguages.SpecialTuringMachineSymbols.EPSILON;
 import static com.formallanguages.StateTuringMachine.readState;
 import static com.formallanguages.TransitionTuringMachine.readTransition;
 
@@ -20,6 +21,7 @@ public class TuringMachine {
     StateTuringMachine initialState;
     ArrayList<StateTuringMachine> finalStates;
 
+    //copy constructor
     public TuringMachine(TuringMachine turingMachine) {
         blocks = new ArrayList<>(turingMachine.blocks.size());
         for (StateTuringMachine block : turingMachine.blocks) {
@@ -113,7 +115,7 @@ public class TuringMachine {
         }
     }
 
-    void addPrefixToAllStates(String prefix) {
+    private void addPrefixToAllStates(String prefix) {
         for (StateTuringMachine block : blocks) {
             block.name = prefix + block.name;
         }
@@ -139,7 +141,7 @@ public class TuringMachine {
         int nextInnerTM = findNextInnerTM(0);
         int innerTMcount = 0;
         while (nextInnerTM != -1) {
-            unrollTuringMachinefromBlock(blocks.get(nextInnerTM), innerTMcount++);
+            unrollTuringMachineFromBlock(blocks.get(nextInnerTM), innerTMcount++);
             nextInnerTM = findNextInnerTM(nextInnerTM);
         }
         associatedMTs.clear();
@@ -159,7 +161,7 @@ public class TuringMachine {
         }
     }
 
-    private void unrollTuringMachinefromBlock(StateTuringMachine blockThatIsTM, int uniqueUnrollingId) {
+    private void unrollTuringMachineFromBlock(StateTuringMachine blockThatIsTM, int uniqueUnrollingId) {
         TuringMachine clonedTM = new TuringMachine(associatedMTs.get(blockThatIsTM.tag));
         clonedTM.increaseAllStateIdsBy(this.findMaximumBlockId() + 1);
 
@@ -186,6 +188,42 @@ public class TuringMachine {
 
         clonedTM.addPrefixToAllStates(blockThatIsTM.name + "_" + uniqueUnrollingId + "_");
         this.blocks.addAll(clonedTM.blocks);
+    }
+
+    static String tapeToString(List<Symbol> tape) {
+        StringBuilder sb = new StringBuilder();
+        for (Symbol symbol : tape) {
+            if (!symbol.value.equals(EPSILON)) sb.append(symbol.value);
+        }
+        return sb.toString();
+    }
+
+    static String otherTapeToString(List<Symbol> tape) {
+        StringBuilder sb = new StringBuilder();
+        for (Symbol symbol : tape) {
+            if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
+            if (symbol instanceof CompositeSymbol) {
+                String sym = ((CompositeSymbol) symbol).value2;
+                if (sym.equals(BLANK)) {
+                    sb.append("_");
+                    continue;
+                }
+                if (!sym.equals(EPSILON)) sb.append(sym);
+            }
+        }
+        return sb.toString();
+    }
+
+    static void tapeRemoveEpsilons(List<Symbol> tape) {
+        Symbol eps = Symbol.getSymbol(EPSILON);
+        while (tape.contains(eps)) tape.remove(eps);
+    }
+
+    static boolean tapeContainsNonTerminal(List<Symbol> tape, HashSet<Symbol> terminals) {
+        for (Symbol symbol : tape) {
+            if (!terminals.contains(symbol)) return true;
+        }
+        return false;
     }
 
     @Override

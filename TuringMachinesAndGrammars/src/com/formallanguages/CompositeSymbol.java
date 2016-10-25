@@ -35,10 +35,6 @@ public final class CompositeSymbol extends Symbol {
         return cs;
     }
 
-    private CompositeSymbol(Symbol symbol1, String value2) {
-        this(symbol1.value, value2);
-    }
-
     public static CompositeSymbol getCompositeSymbol(Symbol symbol1, String value2) {
         Pair<String, String> key = new Pair<>(symbol1.value, value2);
         if (symbols.containsKey(key)) return symbols.get(key);

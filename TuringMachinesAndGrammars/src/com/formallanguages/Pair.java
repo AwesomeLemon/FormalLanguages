@@ -1,8 +1,5 @@
 package com.formallanguages;
 
-/**
- * Created by Alex on 15.10.2016.
- */
 class Pair<T1, T2> {
     final T1 fst;
     final T2 snd;
@@ -19,8 +16,7 @@ class Pair<T1, T2> {
 
         Pair<?, ?> pair = (Pair<?, ?>) o;
 
-        if (!fst.equals(pair.fst)) return false;
-        return snd.equals(pair.snd);
+        return fst.equals(pair.fst) && snd.equals(pair.snd);
 
     }
 
