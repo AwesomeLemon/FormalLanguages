@@ -30,7 +30,7 @@ public class TransitionTuringMachine {
         this.direction = direction;
     }
 
-    static TransitionTuringMachine readTransition(BufferedReader br) throws IOException {
+    static TransitionTuringMachine readTransitionJflap(BufferedReader br) throws IOException {
         String begin = br.readLine();
         if (begin.contains("<!--The list of automata-->")) return null;
 
@@ -53,6 +53,31 @@ public class TransitionTuringMachine {
         br.readLine();//</transition>
 
         return new TransitionTuringMachine(from, to, read, write, dir);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TransitionTuringMachine that = (TransitionTuringMachine) o;
+
+        if (from != that.from) return false;
+        if (to != that.to) return false;
+        if (read != null ? !read.equals(that.read) : that.read != null) return false;
+        if (write != null ? !write.equals(that.write) : that.write != null) return false;
+        return direction == that.direction;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = from;
+        result = 31 * result + to;
+        result = 31 * result + (read != null ? read.hashCode() : 0);
+        result = 31 * result + (write != null ? write.hashCode() : 0);
+        result = 31 * result + (direction != null ? direction.hashCode() : 0);
+        return result;
     }
 
     @Override

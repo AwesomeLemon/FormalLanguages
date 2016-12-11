@@ -6,34 +6,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.formallanguages.DoubleSymbol.getDoubleSymbol;
 import static com.formallanguages.TuringMachine.otherTapeToString_forGrammar0;
-import static com.formallanguages.SpecialTuringMachineSymbols.*;
 
-/** Emulates type zero grammar, generated from Turing Machine using algorithm,
- * described in Martynenko's "Languages and translations". (ISBN 5-288-02870-2)
+/**
+ * Created by Alex on 11.12.2016.
  */
-public class GrammarTypeZeroEmulator {
+public class GrammarTypeOneEmulator {
     private final Grammar grammar;
 
-    public GrammarTypeZeroEmulator(Grammar grammar) {
+    public GrammarTypeOneEmulator(Grammar grammar) {
         this.grammar = grammar;
     }
-
-    //emulates starting after (5): A3 -> eps.
-    public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape, int maxTapeCount) throws Exception {
-        DoubleSymbol epsBlankSym = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
+    //suppose that input is already on the tape.
+    public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape) throws Exception{
         ArrayList<Integer> usedProductions = new ArrayList<>();
-        for (int i = 0; i < maxTapeCount; i++) {
-            tape.add(epsBlankSym);
-        }
         BufferedWriter bw = new BufferedWriter(new FileWriter("out.txt"));
-        int productionStartInd = findFirst6thTypeProduction();
+        int productionStartInd = 0;//temporary
         while (true) {
             int prodInd = performFirstFromStartProduction(tape, productionStartInd);
 
             if (prodInd == -1) {
-                TuringMachine.tapeRemoveEpsilons(tape);
                 bw.close();
                 if (TuringMachine.tapeContainsNonTerminal(tape, grammar.terminals)) {
                     throw new Exception("Grammar cannot produce string of terminals from given input");
@@ -43,7 +35,7 @@ public class GrammarTypeZeroEmulator {
                 return new Pair<>(usedProductions, TuringMachine.tapeToString_forGrammar0(tape));
             }
 
-            bw.write(grammar.productions.get(prodInd) + ": " + otherTapeToString_forGrammar0(tape) + "\n");
+            bw.write(grammar.productions.get(prodInd) + ": " + TuringMachine.tapeToString_forGrammar1(tape) + "\n");
             usedProductions.add(prodInd);
         }
     }
@@ -61,15 +53,6 @@ public class GrammarTypeZeroEmulator {
                 input.add(j + ind, right.get(j));
             }
             return i;
-        }
-        return -1;
-    }
-
-    private int findFirst6thTypeProduction() {
-        Symbol eps = Symbol.getSymbol(EPSILON);
-        for (int i = 0; i < grammar.productions.size(); i++) {
-            if (grammar.productions.get(i).right.size() > 1) continue;
-            if (grammar.productions.get(i).right.get(0).equals(eps)) return i + 1;
         }
         return -1;
     }

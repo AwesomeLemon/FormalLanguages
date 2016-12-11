@@ -4,10 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
-import static com.formallanguages.SpecialTuringMachineSymbols.BLANK;
-import static com.formallanguages.SpecialTuringMachineSymbols.EPSILON;
+import static com.formallanguages.SpecialTuringMachineSymbols.*;
 import static com.formallanguages.StateTuringMachine.readState;
-import static com.formallanguages.TransitionTuringMachine.readTransition;
+import static com.formallanguages.TransitionTuringMachine.readTransitionJflap;
 
 /**
  * Created by Alex on 07.10.2016.
@@ -20,6 +19,20 @@ public class TuringMachine {
     HashSet<String> tapeAlphabet;
     StateTuringMachine initialState;
     ArrayList<StateTuringMachine> finalStates;
+
+    public void makeStateInitial(String initialName) {
+        StateTuringMachine initial = blocks.stream()
+                .filter(stateTuringMachine -> Objects.equals(stateTuringMachine.name, initialName)).findFirst().get();
+        initial.isInitial = true;
+        initialState = initial;
+    }
+
+    public void makeStateFinal(String finalName) {
+        StateTuringMachine finalState = blocks.stream()
+                .filter(stateTuringMachine -> Objects.equals(stateTuringMachine.name, finalName)).findFirst().get();
+        finalState.isFinal = true;
+        finalStates.add(finalState);
+    }
 
     //copy constructor
     public TuringMachine(TuringMachine turingMachine) {
@@ -82,7 +95,43 @@ public class TuringMachine {
         }
     }
 
-    static TuringMachine parseFromFile(BufferedReader br, String name) throws IOException {
+    static TuringMachine parseFromFile(BufferedReader br) throws IOException {
+        HashSet<StateTuringMachine> states = new HashSet<>();
+        HashSet<TransitionTuringMachine> transitions = new HashSet<>();
+        String line;
+        while (!(line = br.readLine()).equals("Productions end")) {
+            if (line.isEmpty()) continue;
+            String[] tokens = line.split(",");
+            String fromName = tokens[0];
+            int fromId = Integer.parseInt(fromName.substring(1));
+            String toName = tokens[1];
+            int toId = Integer.parseInt(toName.substring(1));
+            StateTuringMachine fromState = new StateTuringMachine(fromName, fromId, "", false, false);
+            StateTuringMachine toState = new StateTuringMachine(toName, toId, "", false, false);
+            states.add(fromState);
+            states.add(toState);
+            TransitionTuringMachine transition = new TransitionTuringMachine(fromId, toId, tokens[2], tokens[3],
+                    tokens[4].equals("r") ? TransitionTuringMachine.Direction.Right
+                            : TransitionTuringMachine.Direction.Left);
+            transitions.add(transition);
+        }
+        TuringMachine turingMachine = new TuringMachine(new ArrayList<>(states), new ArrayList<>(transitions), new HashMap<>());
+        turingMachine.correctInputAlphabetLba();
+        turingMachine.makeStateInitial(br.readLine());
+        assert (br.readLine().equals("Final states:"));
+        while ((line = br.readLine()) != null) {
+            if (line.isEmpty()) continue;
+            turingMachine.makeStateFinal(line);
+        }
+        return turingMachine;
+    }
+
+    private void correctInputAlphabetLba() {
+        if (inputAlphabet.contains(LBASTART)) inputAlphabet.remove(LBASTART);
+        if (inputAlphabet.contains(LBAEND)) inputAlphabet.remove(LBAEND);
+    }
+
+    static TuringMachine parseFromJflapFile(BufferedReader br, String name) throws IOException {
         HashMap<String, TuringMachine> innerMachines = new HashMap<>();
         ArrayList<StateTuringMachine> blocks = new ArrayList<>();
         br.readLine();//"<!--The list of states.-->"
@@ -94,10 +143,10 @@ public class TuringMachine {
         }
 
         ArrayList<TransitionTuringMachine> transitions = new ArrayList<>();
-        TransitionTuringMachine transition = readTransition(br);
+        TransitionTuringMachine transition = readTransitionJflap(br);
         while (transition != null) {
             transitions.add(transition);
-            transition = readTransition(br);
+            transition = readTransitionJflap(br);
         }
 
         String line;
@@ -110,7 +159,7 @@ public class TuringMachine {
             if (line.contains(closingTag)) return new TuringMachine(blocks, transitions, innerMachines);
 
             String innerMachineName = line.substring(line.indexOf('<') + 1, line.lastIndexOf('>'));
-            TuringMachine innerTuringMachine = parseFromFile(br, innerMachineName);
+            TuringMachine innerTuringMachine = parseFromJflapFile(br, innerMachineName);
             innerMachines.put(innerMachineName, innerTuringMachine);
         }
     }
@@ -121,11 +170,11 @@ public class TuringMachine {
         }
     }
 
-    static TuringMachine parseWholeFileToTuringMachine(BufferedReader br) throws IOException {
+    static TuringMachine parseWholeJflapFileToTuringMachine(BufferedReader br) throws IOException {
         br.readLine();
         br.readLine();
         br.readLine();
-        return parseFromFile(br, "automaton");
+        return parseFromJflapFile(br, "automaton");
     }
 
     private int findNextInnerTM(int index) {
@@ -190,7 +239,7 @@ public class TuringMachine {
         this.blocks.addAll(clonedTM.blocks);
     }
 
-    static String tapeToString(List<Symbol> tape) {
+    static String tapeToString_forGrammar0(List<Symbol> tape) {
         StringBuilder sb = new StringBuilder();
         for (Symbol symbol : tape) {
             if (!symbol.value.equals(EPSILON)) sb.append(symbol.value);
@@ -198,12 +247,20 @@ public class TuringMachine {
         return sb.toString();
     }
 
-    static String otherTapeToString(List<Symbol> tape) {
+    static String tapeToString_forGrammar1(List<Symbol> tape) {
+        StringBuilder sb = new StringBuilder();
+        for (Symbol symbol : tape) {
+            sb.append(symbol.toString());
+        }
+        return sb.toString();
+    }
+
+    static String otherTapeToString_forGrammar0(List<Symbol> tape) {
         StringBuilder sb = new StringBuilder();
         for (Symbol symbol : tape) {
             if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
-            if (symbol instanceof CompositeSymbol) {
-                String sym = ((CompositeSymbol) symbol).value2;
+            if (symbol instanceof DoubleSymbol) {
+                String sym = ((DoubleSymbol) symbol).value2;
                 if (sym.equals(BLANK)) {
                     sb.append("_");
                     continue;

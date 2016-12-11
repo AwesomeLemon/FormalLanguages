@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.formallanguages.CompositeSymbol.getCompositeSymbol;
+import static com.formallanguages.DoubleSymbol.getDoubleSymbol;
 import static com.formallanguages.SpecialTuringMachineSymbols.*;
-import static com.formallanguages.TuringMachine.parseWholeFileToTuringMachine;
+import static com.formallanguages.TuringMachine.parseWholeJflapFileToTuringMachine;
 
 /**
  * Created by Alex on 15.10.2016.
@@ -27,7 +27,7 @@ public class EmulatingGrammar0Test {
     }
     private Pair<Grammar, TuringMachine> getGrammarAndTM(String fileName, boolean ifTMshouldBeFlattened) throws IOException {
         BufferedReader br = getBufferedReader(fileName);
-        TuringMachine machine = parseWholeFileToTuringMachine(br);
+        TuringMachine machine = parseWholeJflapFileToTuringMachine(br);
         if (ifTMshouldBeFlattened) machine.flatten();
         return new Pair<>(TuringMachineToGrammarConvertor.toType0Grammar(machine),
                 machine);
@@ -39,9 +39,9 @@ public class EmulatingGrammar0Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
+        DoubleSymbol epsBlank = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"), getCompositeSymbol("1", "1"))
+                DoubleSymbol.getDoubleSymbol("1", "1"), DoubleSymbol.getDoubleSymbol("0", "0"), DoubleSymbol.getDoubleSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 10);
         Assert.assertEquals(res.snd, "101");
@@ -54,10 +54,10 @@ public class EmulatingGrammar0Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
+        DoubleSymbol epsBlank = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
-                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"))
+                DoubleSymbol.getDoubleSymbol("1", "1"), DoubleSymbol.getDoubleSymbol("0", "0"),
+                DoubleSymbol.getDoubleSymbol("1", "1"), DoubleSymbol.getDoubleSymbol("0", "0"))
                 .collect(Collectors.toList());
         try {
             Pair<List<Integer>, String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 100);
@@ -73,10 +73,10 @@ public class EmulatingGrammar0Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
+        DoubleSymbol epsBlank = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
-                getCompositeSymbol("1", "1"))
+                DoubleSymbol.getDoubleSymbol("1", "1"), DoubleSymbol.getDoubleSymbol("0", "0"),
+                DoubleSymbol.getDoubleSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 15);
         System.out.println(res.snd);
@@ -89,9 +89,9 @@ public class EmulatingGrammar0Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
-        CompositeSymbol one = getCompositeSymbol("1", "1");
-        CompositeSymbol zero = getCompositeSymbol("0", "0");
+        DoubleSymbol epsBlank = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
+        DoubleSymbol one = DoubleSymbol.getDoubleSymbol("1", "1");
+        DoubleSymbol zero = DoubleSymbol.getDoubleSymbol("0", "0");
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
                 one, zero, zero, zero,
                 one)
@@ -106,10 +106,10 @@ public class EmulatingGrammar0Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
+        DoubleSymbol epsBlank = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                getCompositeSymbol("1", "1"), getCompositeSymbol("0", "0"),
-                getCompositeSymbol("1", "1"))
+                DoubleSymbol.getDoubleSymbol("1", "1"), DoubleSymbol.getDoubleSymbol("0", "0"),
+                DoubleSymbol.getDoubleSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 1);
         Assert.assertEquals(res.snd, "101");
@@ -122,9 +122,9 @@ public class EmulatingGrammar0Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-        CompositeSymbol epsBlank = getCompositeSymbol(EPSILON, BLANK);
+        DoubleSymbol epsBlank = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                getCompositeSymbol(BLANK, BLANK))
+                DoubleSymbol.getDoubleSymbol(BLANK, BLANK))
                 .collect(Collectors.toList());
         try {
             Pair<List<Integer>, String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 5);

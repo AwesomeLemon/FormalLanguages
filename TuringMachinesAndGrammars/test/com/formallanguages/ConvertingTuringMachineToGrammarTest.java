@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.charset.Charset;
 
-import static com.formallanguages.TuringMachine.parseFromFile;
+import static com.formallanguages.TuringMachine.parseFromJflapFile;
 /**
  * Created by Alex on 15.10.2016.
  */
@@ -18,7 +18,7 @@ public class ConvertingTuringMachineToGrammarTest {
     @Test
     public void convertSimpleTuringMachineToGrammar0() throws IOException {
         BufferedReader br = getBufferedReader("dec.txt");
-        TuringMachine dec = parseFromFile(br, "dec.jff");
+        TuringMachine dec = parseFromJflapFile(br, "dec.jff");
         Grammar decGrammar = TuringMachineToGrammarConvertor.toType0Grammar(dec);
         System.out.println(decGrammar);
         //it works if it doesn't fail.

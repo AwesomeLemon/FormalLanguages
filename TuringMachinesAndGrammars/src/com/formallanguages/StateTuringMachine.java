@@ -6,8 +6,8 @@ import java.io.IOException;
 import static com.formallanguages.ParsingXMLUtilities.parseStateOpenTag;
 
 public class StateTuringMachine {
-    final boolean isInitial;
-    final boolean isFinal;
+    boolean isInitial;
+    boolean isFinal;
     final String tag;
 
     String name;
@@ -64,6 +64,31 @@ public class StateTuringMachine {
         if (line.contains("<final/>")) isFinal = true;
         if (!(isFinal || isInitial) && line.contains("</block>")) return null;
         return new Pair<>(isInitial, isFinal);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StateTuringMachine that = (StateTuringMachine) o;
+
+        if (isInitial != that.isInitial) return false;
+        if (isFinal != that.isFinal) return false;
+        if (id != that.id) return false;
+        if (tag != null ? !tag.equals(that.tag) : that.tag != null) return false;
+        return name != null ? name.equals(that.name) : that.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (isInitial ? 1 : 0);
+        result = 31 * result + (isFinal ? 1 : 0);
+        result = 31 * result + (tag != null ? tag.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + id;
+        return result;
     }
 
     @Override

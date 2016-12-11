@@ -7,8 +7,9 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 import static com.formallanguages.TuringMachine.parseFromFile;
+import static com.formallanguages.TuringMachine.parseFromJflapFile;
 import static com.formallanguages.StateTuringMachine.readState;
-import static com.formallanguages.TuringMachine.parseWholeFileToTuringMachine;
+import static com.formallanguages.TuringMachine.parseWholeJflapFileToTuringMachine;
 
 /**
  * Created by Alex on 02.10.2016.
@@ -35,7 +36,7 @@ public class ReadingTuringMachineTest {
     public void readTransitionTest() throws IOException {
         BufferedReader br = getBufferedReader("transitionsOnly.txt");
         for (int i = 0; i < 5; i++) {
-            TransitionTuringMachine tr = TransitionTuringMachine.readTransition(br);
+            TransitionTuringMachine tr = TransitionTuringMachine.readTransitionJflap(br);
             System.out.println(tr);
         }
         //it works if it doesn't fail.
@@ -49,7 +50,7 @@ public class ReadingTuringMachineTest {
     @Test
     public void readSimpleTuringMachine() throws IOException {
         BufferedReader br = getBufferedReader("dec.txt");
-        TuringMachine dec = parseFromFile(br, "dec.jff");
+        TuringMachine dec = parseFromJflapFile(br, "dec.jff");
         System.out.println(dec);
         //it works if it doesn't fail.
     }
@@ -57,7 +58,7 @@ public class ReadingTuringMachineTest {
     @Test
     public void readSeveralSimpleTuringMachines() throws IOException {
         BufferedReader br = getBufferedReader("decCloneShort.txt");
-        TuringMachine turingMachine = parseFromFile(br, "automaton");
+        TuringMachine turingMachine = parseFromJflapFile(br, "automaton");
         System.out.println(turingMachine);
         //it works if it doesn't fail.
     }
@@ -65,7 +66,7 @@ public class ReadingTuringMachineTest {
     @Test
     public void readTuringMachineWithInnerTuringMachines() throws IOException {
         BufferedReader br = getBufferedReader("checkIfPrimeTM_short.txt");
-        TuringMachine turingMachine = parseFromFile(br, "automaton");
+        TuringMachine turingMachine = parseFromJflapFile(br, "automaton");
         System.out.println(turingMachine);
         //it works if it doesn't fail.
     }
@@ -73,7 +74,7 @@ public class ReadingTuringMachineTest {
     @Test
     public void readTuringMachineWithInnerTuringMachinesWholeFile() throws IOException {
         BufferedReader br = getBufferedReader("checkIfPrimeTM.xml");
-        TuringMachine turingMachine = parseWholeFileToTuringMachine(br);
+        TuringMachine turingMachine = parseWholeJflapFileToTuringMachine(br);
         System.out.println(turingMachine);
         //it works if it doesn't fail.
     }
@@ -81,7 +82,7 @@ public class ReadingTuringMachineTest {
     @Test
     public void convertSimpleTuringMachineToGrammar0() throws IOException {
         BufferedReader br = getBufferedReader("dec.txt");
-        TuringMachine dec = parseFromFile(br, "dec.jff");
+        TuringMachine dec = parseFromJflapFile(br, "dec.jff");
         Grammar decGrammar = TuringMachineToGrammarConvertor.toType0Grammar(dec);
         System.out.println(decGrammar);
         //it works if it doesn't fail.
@@ -90,8 +91,15 @@ public class ReadingTuringMachineTest {
     @Test
     public void unrollInnerStates() throws IOException {
         BufferedReader br = getBufferedReader("checkIfPrimeTM.xml");
-        TuringMachine machine = parseWholeFileToTuringMachine(br);
+        TuringMachine machine = parseWholeJflapFileToTuringMachine(br);
         machine.flatten();
+        System.out.println(machine);
+    }
+
+    @Test
+    public void convertLba() throws IOException {
+        BufferedReader br = getBufferedReader("lba_primes.txt");
+        TuringMachine machine = parseFromFile(br);
         System.out.println(machine);
     }
 }
