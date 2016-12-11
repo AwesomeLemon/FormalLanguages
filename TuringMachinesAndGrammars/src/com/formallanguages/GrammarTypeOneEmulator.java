@@ -20,6 +20,8 @@ public class GrammarTypeOneEmulator {
     //suppose that input is already on the tape.
     public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape) throws Exception{
         ArrayList<Integer> usedProductions = new ArrayList<>();
+        ArrayList<Production> usedProductions2 = new ArrayList<>();
+        ArrayList<List<Symbol>> usedProductions3 = new ArrayList<>();
         BufferedWriter bw = new BufferedWriter(new FileWriter("out.txt"));
         int productionStartInd = 0;//temporary
         while (true) {
@@ -37,6 +39,8 @@ public class GrammarTypeOneEmulator {
 
             bw.write(grammar.productions.get(prodInd) + ": " + TuringMachine.tapeToString_forGrammar1(tape) + "\n");
             usedProductions.add(prodInd);
+            usedProductions2.add(grammar.productions.get(prodInd));
+            usedProductions3.add(new ArrayList<>(tape));
         }
     }
 
@@ -46,6 +50,7 @@ public class GrammarTypeOneEmulator {
             List<Symbol> right = grammar.productions.get(i).right;
             int ind = Collections.indexOfSubList(input, left);
             if (ind < 0) continue;
+            if (!left.get(0).equals(input.get(ind))) continue;
             for (int j = 0; j < left.size(); j++) {
                 input.remove(ind);
             }

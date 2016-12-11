@@ -34,6 +34,10 @@ public class TuringMachine {
         finalStates.add(finalState);
     }
 
+    private void setInputAlphabet(HashSet<String> inputAlphabet) {
+        this.inputAlphabet = inputAlphabet;
+    }
+
     //copy constructor
     public TuringMachine(TuringMachine turingMachine) {
         blocks = new ArrayList<>(turingMachine.blocks.size());
@@ -98,6 +102,7 @@ public class TuringMachine {
     static TuringMachine parseFromFile(BufferedReader br) throws IOException {
         HashSet<StateTuringMachine> states = new HashSet<>();
         HashSet<TransitionTuringMachine> transitions = new HashSet<>();
+        HashSet<String> variableValues = new HashSet<>(Arrays.asList("0", "1", "b"));//hardcoded, sorry.
         String line;
         while (!(line = br.readLine()).equals("Productions end")) {
             if (line.isEmpty()) continue;
@@ -110,19 +115,53 @@ public class TuringMachine {
             StateTuringMachine toState = new StateTuringMachine(toName, toId, "", false, false);
             states.add(fromState);
             states.add(toState);
-            TransitionTuringMachine transition = new TransitionTuringMachine(fromId, toId, tokens[2], tokens[3],
-                    tokens[4].equals("r") ? TransitionTuringMachine.Direction.Right
-                            : TransitionTuringMachine.Direction.Left);
-            transitions.add(transition);
+            String read = tokens[2];
+            String write = tokens[3];
+            TransitionTuringMachine.Direction direction = tokens[4].equals("r") ? TransitionTuringMachine.Direction.Right
+                    : TransitionTuringMachine.Direction.Left;
+            if (read.equals("id")) read = "[x;y;z]";
+            if (write.equals("id")) write = "[x;y;z]";
+            if (read.contains("x")) {
+                if (read.contains("y")) {
+                    if (read.contains("z")) {
+                        for (String xvar : variableValues) {
+                            for (String yvar : variableValues) {
+                                for (String zvar : variableValues) {
+                                    transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar).replace("y", yvar).replace("z", zvar),
+                                            write.replace("x", xvar).replace("y", yvar).replace("z", zvar), direction));
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        for (String xvar : variableValues) {
+                            for (String yvar : variableValues) {
+                                transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar).replace("y", yvar), write.replace("x", xvar).replace("y", yvar), direction));
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (String xvar : variableValues) {
+                        transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar), write.replace("x", xvar), direction));
+                    }
+                }
+            }//suppose that if there's 'y', there's 'x'.
+            else {
+                TransitionTuringMachine transition = new TransitionTuringMachine(fromId, toId, read, write, direction);
+                transitions.add(transition);
+            }
         }
         TuringMachine turingMachine = new TuringMachine(new ArrayList<>(states), new ArrayList<>(transitions), new HashMap<>());
         turingMachine.correctInputAlphabetLba();
         turingMachine.makeStateInitial(br.readLine());
+        turingMachine.inputAlphabet = new HashSet<>(Arrays.asList("0", "1"));
         assert (br.readLine().equals("Final states:"));
         while ((line = br.readLine()) != null) {
             if (line.isEmpty()) continue;
             turingMachine.makeStateFinal(line);
         }
+
         return turingMachine;
     }
 
