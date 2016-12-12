@@ -129,15 +129,14 @@ public class TuringMachineToGrammarConvertor {
             Symbol p = Symbol.getSymbol(nextState.name);
             if (transition.read.equals(LBASTART) && transition.write.equals(LBASTART)
                     && transition.direction.equals(TransitionTuringMachine.Direction.Right) && !currentState.isFinal) {
-                //TODO: DO CHECK IF ALPHABETS ARE OK!
                 for (String a : tm.inputAlphabet) {
                     for (String X : tapeAlphabetNoMarkers) {
                         //(2.1)
                         Symbol xSymb = Symbol.getSymbol(X);
                         Symbol aSymb = Symbol.getSymbol(a);
-//                        ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(q, start, xSymb, aSymb, end));
-//                        ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(start, p, xSymb, aSymb, end));
-//                        productions.add(new Production(left2, right2));
+                        ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(q, start, xSymb, aSymb, end));
+                        ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(start, p, xSymb, aSymb, end));
+                        productions.add(new Production(left2, right2));
                         //(5.1)
                         ComplexSymbol left5 = ComplexSymbol.get(Arrays.asList(q, start, xSymb, aSymb));
                         ComplexSymbol right5 = ComplexSymbol.get(Arrays.asList(start, p, xSymb, aSymb));
@@ -152,9 +151,9 @@ public class TuringMachineToGrammarConvertor {
                 for (String a : tm.inputAlphabet) {
                     Symbol aSymb = Symbol.getSymbol(a);
                     //(2.2)
-//                    ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb, end));
-//                    ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(p, start, Y, aSymb, end));
-//                    productions.add(new Production(left2, right2));
+                    ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb, end));
+                    ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(p, start, Y, aSymb, end));
+                    productions.add(new Production(left2, right2));
                     //(5.2)
                     ComplexSymbol left5 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb));
                     ComplexSymbol right5 = ComplexSymbol.get(Arrays.asList(p, start, Y, aSymb));
@@ -173,9 +172,13 @@ public class TuringMachineToGrammarConvertor {
                             List<Symbol> right64 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, p, Z, bSymb)), ComplexSymbol.get(Arrays.asList(Y, aSymb)));
                             productions.add(new Production(left64, right64));
                             //(7.3)
-                            List<Symbol> left7 = Arrays.asList(ComplexSymbol.get(Arrays.asList(Z, bSymb)), ComplexSymbol.get(Arrays.asList(q, X, aSymb, end)));
-                            List<Symbol> right7 = Arrays.asList(ComplexSymbol.get(Arrays.asList(p, Z, bSymb)), ComplexSymbol.get(Arrays.asList(Y, aSymb, end)));
-                            productions.add(new Production(left7, right7));
+                            List<Symbol> left73 = Arrays.asList(ComplexSymbol.get(Arrays.asList(Z, bSymb)), ComplexSymbol.get(Arrays.asList(q, X, aSymb, end)));
+                            List<Symbol> right73 = Arrays.asList(ComplexSymbol.get(Arrays.asList(p, Z, bSymb)), ComplexSymbol.get(Arrays.asList(Y, aSymb, end)));
+                            productions.add(new Production(left73, right73));
+                            //(7.4)
+                            List<Symbol> left74 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, Z, bSymb)), ComplexSymbol.get(Arrays.asList(q, X, aSymb, end)));
+                            List<Symbol> right74 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, p, Z, bSymb)), ComplexSymbol.get(Arrays.asList(Y, aSymb, end)));
+                            productions.add(new Production(left74, right74));
                         }
                     }
                 }
@@ -187,19 +190,25 @@ public class TuringMachineToGrammarConvertor {
                 for (String a : tm.inputAlphabet) {
                     Symbol aSymb = Symbol.getSymbol(a);
                     //(2.3)
-//                    ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb, end));
-//                    ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(start, Y, aSymb, p, end));
-//                    productions.add(new Production(left2, right2));
+                    ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb, end));
+                    ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(start, Y, aSymb, p, end));
+                    productions.add(new Production(left2, right2));
                     for (String z : tapeAlphabetNoMarkers) {
                         for (String b : tm.inputAlphabet) {
                             Symbol bSymb = Symbol.getSymbol(b);
                             Symbol Z =Symbol.getSymbol(z);
                             //(5.3)
-                            List<Symbol> left5 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, q, X, aSymb)),
+                            List<Symbol> left53 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, q, X, aSymb)),
                                     ComplexSymbol.get(Arrays.asList(Z, bSymb)));
-                            List<Symbol> right5 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, Y, aSymb)),
+                            List<Symbol> right53 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, Y, aSymb)),
                                     ComplexSymbol.get(Arrays.asList(p, Z, bSymb)));
-                            productions.add(new Production(left5, right5));
+                            productions.add(new Production(left53, right53));
+                            //(5.4)
+                            List<Symbol> left54 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, q, X, aSymb)),
+                                    ComplexSymbol.get(Arrays.asList(Z, bSymb, end)));
+                            List<Symbol> right54 = Arrays.asList(ComplexSymbol.get(Arrays.asList(start, Y, aSymb)),
+                                    ComplexSymbol.get(Arrays.asList(p, Z, bSymb, end)));
+                            productions.add(new Production(left54, right54));
                             //(6.1)
                             List<Symbol> left61 = Arrays.asList(ComplexSymbol.get(Arrays.asList(q, X, aSymb)), ComplexSymbol.get(Arrays.asList(Z, bSymb)));
                             List<Symbol> right61 = Arrays.asList(ComplexSymbol.get(Arrays.asList(Y, aSymb)), ComplexSymbol.get(Arrays.asList(p, Z, bSymb)));
@@ -223,9 +232,9 @@ public class TuringMachineToGrammarConvertor {
                         Symbol X = Symbol.getSymbol(x);
                         Symbol aSymb = Symbol.getSymbol(a);
                         //(2.4)
-//                        ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(start, X, aSymb, q, end));
-//                        ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(start, p, X, aSymb, end));
-//                        productions.add(new Production(left2, right2));
+                        ComplexSymbol left2 = ComplexSymbol.get(Arrays.asList(start, X, aSymb, q, end));
+                        ComplexSymbol right2 = ComplexSymbol.get(Arrays.asList(start, p, X, aSymb, end));
+                        productions.add(new Production(left2, right2));
                         //(7.2)
                         ComplexSymbol left7 = ComplexSymbol.get(Arrays.asList(X, aSymb, q, end));
                         ComplexSymbol right7 = ComplexSymbol.get(Arrays.asList(p, X, aSymb, end));
@@ -242,12 +251,12 @@ public class TuringMachineToGrammarConvertor {
                     Symbol aSymb = Symbol.getSymbol(a);
                     Symbol X = Symbol.getSymbol(x);
                     //(3.*)
-//                    ComplexSymbol left31 = ComplexSymbol.get(Arrays.asList(q, start, X, aSymb, end));
-//                    ComplexSymbol left32 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb, end));
-//                    ComplexSymbol left33 = ComplexSymbol.get(Arrays.asList(start, X, aSymb, q, end));
-//                    productions.add(new Production(left31, aSymb));
-//                    productions.add(new Production(left32, aSymb));
-//                    productions.add(new Production(left33, aSymb));
+                    ComplexSymbol left31 = ComplexSymbol.get(Arrays.asList(q, start, X, aSymb, end));
+                    ComplexSymbol left32 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb, end));
+                    ComplexSymbol left33 = ComplexSymbol.get(Arrays.asList(start, X, aSymb, q, end));
+                    productions.add(new Production(left31, aSymb));
+                    productions.add(new Production(left32, aSymb));
+                    productions.add(new Production(left33, aSymb));
                     //(8.*)
                     ComplexSymbol left81 = ComplexSymbol.get(Arrays.asList(q, start, X, aSymb));
                     ComplexSymbol left82 = ComplexSymbol.get(Arrays.asList(start, q, X, aSymb));
@@ -311,15 +320,6 @@ public class TuringMachineToGrammarConvertor {
                     s.add(ComplexSymbol.get(Arrays.asList(start, X, a)));
                     s.add(ComplexSymbol.get(Arrays.asList(X, a)));
                     s.add(ComplexSymbol.get(Arrays.asList(X, a, end)));
-//                    s.set(0, ComplexSymbol.get(Arrays.asList(q, start, X, a, end)));
-//                    s.set(1, ComplexSymbol.get(Arrays.asList(start, q, X, a, end)));
-//                    s.set(2, ComplexSymbol.get(Arrays.asList(start, X, a, q, end)));
-//                    s.set(3, ComplexSymbol.get(Arrays.asList(q, X, a)));
-//                    s.set(4, ComplexSymbol.get(Arrays.asList(q, X, a, end)));
-//                    s.set(5, ComplexSymbol.get(Arrays.asList(X, a, q, end)));
-//                    s.set(6, ComplexSymbol.get(Arrays.asList(start, X, a)));
-//                    s.set(7, ComplexSymbol.get(Arrays.asList(X, a)));
-//                    s.set(8, ComplexSymbol.get(Arrays.asList(X, a, end)));
                     nonterminals.addAll(s);
                 }
             }

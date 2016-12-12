@@ -90,7 +90,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void unrollInnerStates() throws IOException {
-        BufferedReader br = getBufferedReader("checkIfPrimeTM.xml");
+        BufferedReader br = getBufferedReader("checkIfPrimeTM.jff");
         TuringMachine machine = parseWholeJflapFileToTuringMachine(br);
         machine.flatten();
         System.out.println(machine);

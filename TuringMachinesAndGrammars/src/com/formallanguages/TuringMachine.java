@@ -34,10 +34,6 @@ public class TuringMachine {
         finalStates.add(finalState);
     }
 
-    private void setInputAlphabet(HashSet<String> inputAlphabet) {
-        this.inputAlphabet = inputAlphabet;
-    }
-
     //copy constructor
     public TuringMachine(TuringMachine turingMachine) {
         blocks = new ArrayList<>(turingMachine.blocks.size());
@@ -127,7 +123,8 @@ public class TuringMachine {
                         for (String xvar : variableValues) {
                             for (String yvar : variableValues) {
                                 for (String zvar : variableValues) {
-                                    transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar).replace("y", yvar).replace("z", zvar),
+                                    transitions.add(new TransitionTuringMachine(fromId, toId,
+                                            read.replace("x", xvar).replace("y", yvar).replace("z", zvar),
                                             write.replace("x", xvar).replace("y", yvar).replace("z", zvar), direction));
                                 }
                             }
@@ -136,14 +133,17 @@ public class TuringMachine {
                     else {
                         for (String xvar : variableValues) {
                             for (String yvar : variableValues) {
-                                transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar).replace("y", yvar), write.replace("x", xvar).replace("y", yvar), direction));
+                                transitions.add(new TransitionTuringMachine(fromId, toId,
+                                        read.replace("x", xvar).replace("y", yvar),
+                                        write.replace("x", xvar).replace("y", yvar), direction));
                             }
                         }
                     }
                 }
                 else {
                     for (String xvar : variableValues) {
-                        transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar), write.replace("x", xvar), direction));
+                        transitions.add(new TransitionTuringMachine(fromId, toId, read.replace("x", xvar),
+                                write.replace("x", xvar), direction));
                     }
                 }
             }//suppose that if there's 'y', there's 'x'.
@@ -278,37 +278,11 @@ public class TuringMachine {
         this.blocks.addAll(clonedTM.blocks);
     }
 
-    static String tapeToString_forGrammar0(List<Symbol> tape) {
-        StringBuilder sb = new StringBuilder();
-        for (Symbol symbol : tape) {
-            if (!symbol.value.equals(EPSILON)) sb.append(symbol.value);
-        }
-        return sb.toString();
-    }
 
-    static String tapeToString_forGrammar1(List<Symbol> tape) {
-        StringBuilder sb = new StringBuilder();
-        for (Symbol symbol : tape) {
-            sb.append(symbol.toString());
-        }
-        return sb.toString();
-    }
 
-    static String otherTapeToString_forGrammar0(List<Symbol> tape) {
-        StringBuilder sb = new StringBuilder();
-        for (Symbol symbol : tape) {
-            if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
-            if (symbol instanceof DoubleSymbol) {
-                String sym = ((DoubleSymbol) symbol).value2;
-                if (sym.equals(BLANK)) {
-                    sb.append("_");
-                    continue;
-                }
-                if (!sym.equals(EPSILON)) sb.append(sym);
-            }
-        }
-        return sb.toString();
-    }
+
+
+
 
     static void tapeRemoveEpsilons(List<Symbol> tape) {
         Symbol eps = Symbol.getSymbol(EPSILON);

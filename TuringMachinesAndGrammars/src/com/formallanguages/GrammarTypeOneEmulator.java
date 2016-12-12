@@ -2,45 +2,43 @@ package com.formallanguages;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.formallanguages.TuringMachine.otherTapeToString_forGrammar0;
-
 /**
  * Created by Alex on 11.12.2016.
  */
 public class GrammarTypeOneEmulator {
     private final Grammar grammar;
-
+    private String tapeToString(List<Symbol> tape) {
+        StringBuilder sb = new StringBuilder();
+        for (Symbol symbol : tape) {
+            sb.append(symbol.toString());
+        }
+        return sb.toString();
+    }
     public GrammarTypeOneEmulator(Grammar grammar) {
         this.grammar = grammar;
     }
     //suppose that input is already on the tape.
-    public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape) throws Exception{
+    public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape) throws IOException {
         ArrayList<Integer> usedProductions = new ArrayList<>();
-        ArrayList<Production> usedProductions2 = new ArrayList<>();
-        ArrayList<List<Symbol>> usedProductions3 = new ArrayList<>();
-        BufferedWriter bw = new BufferedWriter(new FileWriter("out.txt"));
-        int productionStartInd = 0;//temporary
+        BufferedWriter derivationHistory = new BufferedWriter(new FileWriter("derivation_grammar1.txt"));
+        int productionStartInd = 0;
         while (true) {
             int prodInd = performFirstFromStartProduction(tape, productionStartInd);
 
             if (prodInd == -1) {
-                bw.close();
+                derivationHistory.close();
                 if (TuringMachine.tapeContainsNonTerminal(tape, grammar.terminals)) {
-                    throw new Exception("Grammar cannot produce string of terminals from given input");
-                    //grammar cannot process given input, 'cause corresponding TM doesn't accept it.
-                    //or the grammar is wrong.
+                    return null;
                 }
-                return new Pair<>(usedProductions, TuringMachine.tapeToString_forGrammar0(tape));
+                return new Pair<>(usedProductions, tapeToString(tape));
             }
 
-            bw.write(grammar.productions.get(prodInd) + ": " + TuringMachine.tapeToString_forGrammar1(tape) + "\n");
+            derivationHistory.write(tapeToString(tape) + "\n");
             usedProductions.add(prodInd);
-            usedProductions2.add(grammar.productions.get(prodInd));
-            usedProductions3.add(new ArrayList<>(tape));
         }
     }
 

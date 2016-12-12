@@ -8,20 +8,15 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.formallanguages.DoubleSymbol.getDoubleSymbol;
 import static com.formallanguages.SpecialTuringMachineSymbols.*;
 import static com.formallanguages.TuringMachine.parseWholeJflapFileToTuringMachine;
+import static com.formallanguages.Utilities.getBufferedReader;
 
 /**
  * Created by Alex on 15.10.2016.
  */
 public class EmulatingGrammar0Test {
-    private BufferedReader getBufferedReader(String filename) throws FileNotFoundException {
-        InputStream fis = new FileInputStream(filename);
-        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-        return new BufferedReader(isr);
-    }
+
     private Pair<Grammar, TuringMachine> getGrammarAndTM(String fileName) throws IOException {
         return getGrammarAndTM(fileName, true);
     }

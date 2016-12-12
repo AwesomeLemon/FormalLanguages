@@ -1,6 +1,4 @@
 package com.formallanguages;
-
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
@@ -11,16 +9,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.formallanguages.SpecialTuringMachineSymbols.*;
+import static com.formallanguages.Utilities.getBufferedReader;
 
 /**
  * Created by Alex on 11.12.2016.
  */
 public class EmulatingGrammar1Test {
-    private BufferedReader getBufferedReader(String filename) throws FileNotFoundException {
-        InputStream fis = new FileInputStream(filename);
-        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-        return new BufferedReader(isr);
-    }
     private Pair<Grammar, TuringMachine> getGrammarAndTM(String fileName) throws IOException {
         BufferedReader br = getBufferedReader(fileName);
         TuringMachine machine = TuringMachine.parseFromFile(br);
@@ -34,15 +28,21 @@ public class EmulatingGrammar1Test {
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
-
         Symbol s1 = Symbol.getSymbol("1");
         Symbol s0 = Symbol.getSymbol("0");
-        List<Symbol> input = Stream.of(
+        List<Symbol> input5 = Stream.of(
                 new ComplexSymbol(Arrays.asList(Symbol.getSymbol(machine.initialState.name), Symbol.getSymbol(LBASTART), s1, s1)),
                 new ComplexSymbol(Arrays.asList(s0, s0)),
                 new ComplexSymbol(Arrays.asList(s1, s1, Symbol.getSymbol(LBAEND))))
                 .collect(Collectors.toList());
-        Pair<List<Integer>,String> res = new GrammarTypeOneEmulator(grammar).emulatePartially(input);
+        List<Symbol> input2 = Stream.of(
+                new ComplexSymbol(Arrays.asList(Symbol.getSymbol(machine.initialState.name), Symbol.getSymbol(LBASTART), s1, s1)),
+                new ComplexSymbol(Arrays.asList(s0, s0, Symbol.getSymbol(LBAEND))))
+                .collect(Collectors.toList());
+        List<Symbol> input1 = Stream.of(
+                new ComplexSymbol(Arrays.asList(Symbol.getSymbol(machine.initialState.name), Symbol.getSymbol(LBASTART), s1, s1, Symbol.getSymbol(LBAEND))))
+                .collect(Collectors.toList());
+        Pair<List<Integer>,String> res = new GrammarTypeOneEmulator(grammar).emulatePartially(input5);
      //   Assert.assertEquals(res.snd, "101");
         System.out.println(res.snd);
     }

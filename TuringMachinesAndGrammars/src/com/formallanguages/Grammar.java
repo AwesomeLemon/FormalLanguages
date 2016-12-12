@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.HashSet;
 
 public class Grammar {
-    private final HashSet<Symbol> nonterminals;
+    final HashSet<Symbol> nonterminals;
     final HashSet<Symbol> terminals;
-    private final Symbol axiom;
+    final Symbol axiom;
     final List<Production> productions;
 
     public Grammar(HashSet<Symbol> nonterminals, HashSet<Symbol> terminals, Symbol axiom, List<Production> productions) {

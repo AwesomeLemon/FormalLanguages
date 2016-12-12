@@ -2,12 +2,11 @@ package com.formallanguages;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.formallanguages.DoubleSymbol.getDoubleSymbol;
-import static com.formallanguages.TuringMachine.otherTapeToString_forGrammar0;
 import static com.formallanguages.SpecialTuringMachineSymbols.*;
 
 /** Emulates type zero grammar, generated from Turing Machine using algorithm,
@@ -21,13 +20,13 @@ public class GrammarTypeZeroEmulator {
     }
 
     //emulates starting after (5): A3 -> eps.
-    public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape, int maxTapeCount) throws Exception {
+    public Pair<List<Integer>, String> emulatePartially(List<Symbol> tape, int maxTapeCount) throws IOException {
         DoubleSymbol epsBlankSym = DoubleSymbol.getDoubleSymbol(EPSILON, BLANK);
         ArrayList<Integer> usedProductions = new ArrayList<>();
         for (int i = 0; i < maxTapeCount; i++) {
             tape.add(epsBlankSym);
         }
-        BufferedWriter bw = new BufferedWriter(new FileWriter("out.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("derivation_grammar0.txt"));
         int productionStartInd = findFirst6thTypeProduction();
         while (true) {
             int prodInd = performFirstFromStartProduction(tape, productionStartInd);
@@ -36,14 +35,13 @@ public class GrammarTypeZeroEmulator {
                 TuringMachine.tapeRemoveEpsilons(tape);
                 bw.close();
                 if (TuringMachine.tapeContainsNonTerminal(tape, grammar.terminals)) {
-                    throw new Exception("Grammar cannot produce string of terminals from given input");
-                    //grammar cannot process given input, 'cause corresponding TM doesn't accept it.
-                    //or the grammar is wrong.
+                    return null;
                 }
-                return new Pair<>(usedProductions, TuringMachine.tapeToString_forGrammar0(tape));
+                return new Pair<>(usedProductions, tapeToString(tape));
             }
 
-            bw.write(grammar.productions.get(prodInd) + ": " + otherTapeToString_forGrammar0(tape) + "\n");
+            bw.write(tapeToString(tape) + "\n\n");
+
             usedProductions.add(prodInd);
         }
     }
@@ -72,5 +70,35 @@ public class GrammarTypeZeroEmulator {
             if (grammar.productions.get(i).right.get(0).equals(eps)) return i + 1;
         }
         return -1;
+    }
+
+    private String otherTapeToString(List<Symbol> tape) {
+        StringBuilder sb = new StringBuilder();
+        for (Symbol symbol : tape) {
+            if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
+            if (symbol instanceof DoubleSymbol) {
+                String sym = ((DoubleSymbol) symbol).value2;
+                if (sym.equals(BLANK)) {
+                    sb.append("_");
+                    continue;
+                }
+                if (!sym.equals(EPSILON)) sb.append(sym);
+            }
+        }
+        return sb.toString();
+    }
+//    private String tapeToString(List<Symbol> tape) {
+//        StringBuilder sb = new StringBuilder();
+//        for (Symbol symbol : tape) {
+//            sb.append(symbol.toString());
+//        }
+//        return sb.toString();
+//    }
+    private String tapeToString(List<Symbol> tape) {
+        StringBuilder sb = new StringBuilder();
+        for (Symbol symbol : tape) {
+            if (!symbol.value.equals(EPSILON)) sb.append(symbol.value);
+        }
+        return sb.toString();
     }
 }

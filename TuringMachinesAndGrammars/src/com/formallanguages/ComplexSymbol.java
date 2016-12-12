@@ -24,11 +24,6 @@ public class ComplexSymbol extends Symbol {
         valueList = Arrays.asList(value);
     }
 
-//    public ComplexSymbol(List<String> valueList){
-//        super(valueList.get(0));
-//        this.valueList = valueList;
-//    }
-
     public ComplexSymbol(List<Symbol> symbolList) {
         super(symbolList.get(0));
         this.valueList = new ArrayList<>();
@@ -45,9 +40,7 @@ public class ComplexSymbol extends Symbol {
 
         ComplexSymbol that = (ComplexSymbol) o;
 
-        boolean res = valueList != null ? valueList.equals(that.valueList) : that.valueList == null;
-
-        return res;
+        return valueList != null ? valueList.equals(that.valueList) : that.valueList == null;
     }
 
     @Override
@@ -59,7 +52,7 @@ public class ComplexSymbol extends Symbol {
 
     @Override
     public String toString() {
-        return "ComplexSymbol{" +
+        return "{" +
                 valueList +
                 '}';
     }
