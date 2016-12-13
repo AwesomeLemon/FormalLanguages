@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 public class Utilities {
     static BufferedReader getBufferedReader(String filename) throws FileNotFoundException {
         InputStream fis = new FileInputStream(filename);
-        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+        InputStreamReader isr = new InputStreamReader(fis);//, Charset.forName("UTF-8"));
         return new BufferedReader(isr);
     }
 
@@ -28,6 +28,8 @@ public class Utilities {
             for (Production production : grammar.productions) {
                 writer.write(production.toString() + "\n");
             }
+            writer.flush();
+            writer.close();
         }
         catch (IOException e) {
             e.printStackTrace();

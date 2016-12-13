@@ -72,21 +72,21 @@ public class GrammarTypeZeroEmulator {
         return -1;
     }
 
-    private String otherTapeToString(List<Symbol> tape) {
-        StringBuilder sb = new StringBuilder();
-        for (Symbol symbol : tape) {
-            if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
-            if (symbol instanceof DoubleSymbol) {
-                String sym = ((DoubleSymbol) symbol).value2;
-                if (sym.equals(BLANK)) {
-                    sb.append("_");
-                    continue;
-                }
-                if (!sym.equals(EPSILON)) sb.append(sym);
-            }
-        }
-        return sb.toString();
-    }
+//    private String otherTapeToString(List<Symbol> tape) {
+//        StringBuilder sb = new StringBuilder();
+//        for (Symbol symbol : tape) {
+//            if (symbol.value.contains("q")) sb.append("(").append(symbol.value).append(")");
+//            if (symbol instanceof DoubleSymbol) {
+//                String sym = ((DoubleSymbol) symbol).value2;
+//                if (sym.equals(BLANK)) {
+//                    sb.append("_");
+//                    continue;
+//                }
+//                if (!sym.equals(EPSILON)) sb.append(sym);
+//            }
+//        }
+//        return sb.toString();
+//    }
 //    private String tapeToString(List<Symbol> tape) {
 //        StringBuilder sb = new StringBuilder();
 //        for (Symbol symbol : tape) {
@@ -97,7 +97,7 @@ public class GrammarTypeZeroEmulator {
     private String tapeToString(List<Symbol> tape) {
         StringBuilder sb = new StringBuilder();
         for (Symbol symbol : tape) {
-            if (!symbol.value.equals(EPSILON)) sb.append(symbol.value);
+            if (!symbol.value.equals(EPSILON)) sb.append(symbol.toString());
         }
         return sb.toString();
     }

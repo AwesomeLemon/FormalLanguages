@@ -156,7 +156,8 @@ public class TuringMachine {
         turingMachine.correctInputAlphabetLba();
         turingMachine.makeStateInitial(br.readLine());
         turingMachine.inputAlphabet = new HashSet<>(Arrays.asList("0", "1"));
-        assert (br.readLine().equals("Final states:"));
+        String finalStatesLine = br.readLine();
+        assert (finalStatesLine.equals("Final states:"));
         while ((line = br.readLine()) != null) {
             if (line.isEmpty()) continue;
             turingMachine.makeStateFinal(line);
@@ -277,12 +278,6 @@ public class TuringMachine {
         clonedTM.addPrefixToAllStates(blockThatIsTM.name + "_" + uniqueUnrollingId + "_");
         this.blocks.addAll(clonedTM.blocks);
     }
-
-
-
-
-
-
 
     static void tapeRemoveEpsilons(List<Symbol> tape) {
         Symbol eps = Symbol.getSymbol(EPSILON);

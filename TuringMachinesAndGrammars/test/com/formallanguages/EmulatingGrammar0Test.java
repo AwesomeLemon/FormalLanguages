@@ -45,7 +45,7 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammarWithInputThatBreaksIt() throws IOException {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.xml");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.jff");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
@@ -64,7 +64,7 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammar0WithGoodInput() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.xml");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.jff");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
@@ -80,7 +80,7 @@ public class EmulatingGrammar0Test {
 
     @Test
     public void emulateGrammar0WithAnotherGoodInput() throws Exception {
-        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.xml");
+        Pair<Grammar, TuringMachine> grammarAndTM = getGrammarAndTM("checkIfPrimeTM.jff");
         Grammar grammar = grammarAndTM.fst;
         TuringMachine machine = grammarAndTM.snd;
 
@@ -88,7 +88,7 @@ public class EmulatingGrammar0Test {
         DoubleSymbol one = DoubleSymbol.getDoubleSymbol("1", "1");
         DoubleSymbol zero = DoubleSymbol.getDoubleSymbol("0", "0");
         List<Symbol> input = Stream.of(epsBlank, epsBlank, epsBlank, new Symbol(machine.initialState.name),
-                one, zero, zero, zero,
+                one, one, zero,
                 one)
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 30);

@@ -1,10 +1,7 @@
 package com.formallanguages;
 
-import javax.swing.plaf.synth.SynthButtonUI;
 import java.util.*;
 import java.util.stream.Collectors;
-import com.formallanguages.TransitionTuringMachine.Direction;
-
 import static com.formallanguages.DoubleSymbol.getDoubleSymbol;
 import static com.formallanguages.DoubleSymbol.getRepeatedSymbol;
 import static com.formallanguages.SpecialTuringMachineSymbols.*;
@@ -96,7 +93,6 @@ public class TuringMachineToGrammarConvertor {
     }
 
     public static Grammar toType1Grammar(TuringMachine tm) {
-        //TODO: make sure that tm.inputAlphabet contains proper values! Also, it shouldn't contain 'c' or 's'.
         HashSet<Symbol> terminals = tm.inputAlphabet.stream()
                 .map(Symbol::getSymbol).collect(Collectors.toCollection(HashSet::new));
         HashSet<Symbol> nonterminals = new HashSet<>();
@@ -110,7 +106,6 @@ public class TuringMachineToGrammarConvertor {
         Symbol end = Symbol.getSymbol(LBAEND);
 
         ArrayList<Production> productions = new ArrayList<>();
-        //TODO: decide to use c,s or LBASTART, LBAEND
         HashSet<String> tapeAlphabetNoMarkers = new HashSet<>(tm.tapeAlphabet
                 .stream().filter(x -> !(x.equals("c") || x.equals("s"))).collect(Collectors.toList()));
         //(1)
@@ -118,7 +113,6 @@ public class TuringMachineToGrammarConvertor {
         for (String a : tm.inputAlphabet) {
             Symbol aSymb = Symbol.getSymbol(a);
             ComplexSymbol newComplexSymbol = ComplexSymbol.get(Arrays.asList(initialState, start, aSymb, aSymb, end));
-            //nonterminals.add(newComplexSymbol);
             productions.add(new Production(a1, newComplexSymbol));
         }
         //(2.*), (5.*), (6.*), (7.*)
