@@ -1,4 +1,5 @@
 package com.formallanguages;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
@@ -43,7 +44,7 @@ public class EmulatingGrammar1Test {
                 new ComplexSymbol(Arrays.asList(Symbol.getSymbol(machine.initialState.name), Symbol.getSymbol(LBASTART), s1, s1, Symbol.getSymbol(LBAEND))))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeOneEmulator(grammar).emulatePartially(input5);
-     //   Assert.assertEquals(res.snd, "101");
+        Assert.assertEquals(res.snd, "{1}{0}{1}");
         System.out.println(res.snd);
     }
 }

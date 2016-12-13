@@ -73,7 +73,7 @@ public class ReadingTuringMachineTest {
 
     @Test
     public void readTuringMachineWithInnerTuringMachinesWholeFile() throws IOException {
-        BufferedReader br = getBufferedReader("checkIfPrimeTM.xml");
+        BufferedReader br = getBufferedReader("checkIfPrimeTM.jff");
         TuringMachine turingMachine = parseWholeJflapFileToTuringMachine(br);
         System.out.println(turingMachine);
         //it works if it doesn't fail.

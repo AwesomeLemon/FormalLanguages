@@ -39,7 +39,7 @@ public class EmulatingGrammar0Test {
                 DoubleSymbol.getDoubleSymbol("1", "1"), DoubleSymbol.getDoubleSymbol("0", "0"), DoubleSymbol.getDoubleSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 10);
-        Assert.assertEquals(res.snd, "101");
+        Assert.assertEquals(res.snd, "{1}{0}{1}");
         System.out.println(res.snd);
     }
 
@@ -107,7 +107,7 @@ public class EmulatingGrammar0Test {
                 DoubleSymbol.getDoubleSymbol("1", "1"))
                 .collect(Collectors.toList());
         Pair<List<Integer>,String> res = new GrammarTypeZeroEmulator(grammar).emulatePartially(input, 1);
-        Assert.assertEquals(res.snd, "101");
+        Assert.assertEquals(res.snd, "{1}{0}{1}");
         System.out.println(res.snd);
         System.out.println(res.fst);
     }
